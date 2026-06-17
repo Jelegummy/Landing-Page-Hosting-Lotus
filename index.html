@@ -1,0 +1,2727 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BAIBUA AI — สร้างเว็บไซต์ด้วย AI ใน 5 นาที | HostingLotus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0fdf4', 100: '#dcfce7', 200: '#bbf7d0',
+              300: '#86efac', 400: '#4ade80', 500: '#43a047',
+              600: '#2e7d32', 700: '#1b5e20', 800: '#145214',
+            }
+          },
+          fontFamily: { sans: ["'Bai Jamjuree'", 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <!-- Three.js (global THREE) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <style>
+    /* ── Reset ── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      padding: 0;
+      margin: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Bai Jamjuree', sans-serif;
+      overflow-x: hidden;
+      background: #fff;
+      color: #111827;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #43a047;
+      border-radius: 10px;
+    }
+
+    /* ── Gradient text ── */
+    .text-gradient-green,
+    .text-gradient-vivid {
+      background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 30%, #43a047 65%, #66bb6a 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .text-gradient-gold {
+      background: linear-gradient(135deg, #d97706, #f59e0b, #fde68a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── Glass ── */
+    .glass {
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    }
+
+    /* ── Hero background ── */
+    .bg-hero {
+      background:
+        radial-gradient(ellipse 60% 60% at 0% 30%, rgba(255, 172, 190, 0.55) 0%, transparent 55%),
+        radial-gradient(ellipse 55% 50% at 0% 0%, rgba(255, 179, 198, 0.45) 0%, transparent 55%),
+        radial-gradient(ellipse 55% 55% at 100% 15%, rgba(192, 216, 248, 0.45) 0%, transparent 50%),
+        radial-gradient(ellipse 55% 55% at 100% 88%, rgba(184, 240, 222, 0.55) 0%, transparent 52%),
+        radial-gradient(ellipse 60% 45% at 50% 100%, rgba(210, 243, 205, 0.40) 0%, transparent 60%),
+        #fff8fc;
+    }
+
+    /* ── Blob animations ── */
+    @keyframes blob {
+
+      0%,
+      100% {
+        transform: translate(0, 0) scale(1);
+      }
+
+      33% {
+        transform: translate(20px, -15px) scale(1.05);
+      }
+
+      66% {
+        transform: translate(-15px, 10px) scale(0.95);
+      }
+    }
+
+    @keyframes blob-slow {
+
+      0%,
+      100% {
+        transform: translate(0, 0) scale(1);
+      }
+
+      50% {
+        transform: translate(-20px, 15px) scale(1.04);
+      }
+    }
+
+    .animate-blob {
+      animation: blob 9s ease-in-out infinite;
+    }
+
+    .animate-blob-slow {
+      animation: blob-slow 14s ease-in-out infinite;
+    }
+
+    .delay-2000 {
+      animation-delay: 2s;
+    }
+
+    .delay-4000 {
+      animation-delay: 4s;
+    }
+
+    .delay-6000 {
+      animation-delay: 6s;
+    }
+
+    /* ── Float ── */
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0)
+      }
+
+      50% {
+        transform: translateY(-10px)
+      }
+    }
+
+    @keyframes float-fast {
+
+      0%,
+      100% {
+        transform: translateY(0)
+      }
+
+      50% {
+        transform: translateY(-8px)
+      }
+    }
+
+    .animate-float {
+      animation: float 3.5s ease-in-out infinite;
+    }
+
+    .animate-float-fast {
+      animation: float-fast 3.2s ease-in-out infinite;
+    }
+
+    /* ── Pulse green ── */
+    @keyframes pulse-green {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(67, 160, 71, 0.5);
+      }
+
+      50% {
+        box-shadow: 0 0 0 8px rgba(67, 160, 71, 0);
+      }
+    }
+
+    .animate-pulse-green {
+      animation: pulse-green 2s ease-out infinite;
+    }
+
+    /* ── Scroll indicator ── */
+    @keyframes scroll-bounce {
+
+      0%,
+      100% {
+        transform: translateY(0)
+      }
+
+      50% {
+        transform: translateY(14px)
+      }
+    }
+
+    .animate-scroll {
+      animation: scroll-bounce 1.6s ease-in-out infinite;
+    }
+
+    /* ── Marquee (Examples) ── */
+    @keyframes marquee {
+      from {
+        transform: translateX(0)
+      }
+
+      to {
+        transform: translateX(-50%)
+      }
+    }
+
+    @keyframes marquee-reverse {
+      from {
+        transform: translateX(-50%)
+      }
+
+      to {
+        transform: translateX(0)
+      }
+    }
+
+    .animate-marquee {
+      animation: marquee 30s linear infinite;
+    }
+
+    .animate-marquee-reverse {
+      animation: marquee-reverse 30s linear infinite;
+    }
+
+    .marquee-track {
+      display: flex;
+      gap: 20px;
+      width: max-content;
+    }
+
+    .marquee-track:hover {
+      animation-play-state: paused;
+    }
+
+    .icon-container {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .icon-svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: #006400;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ── Ping (CTA) ── */
+    @keyframes ping {
+      0% {
+        transform: scale(1);
+        opacity: .4
+      }
+
+      80%,
+      100% {
+        transform: scale(1.18);
+        opacity: 0
+      }
+    }
+
+    .animate-ping {
+      animation: ping 2.2s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+
+    /* ── Sparkle ── */
+    @keyframes sparkle {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: .3
+      }
+
+      50% {
+        transform: scale(1.8);
+        opacity: .7
+      }
+    }
+
+    .animate-sparkle {
+      animation: sparkle 2.8s ease-in-out infinite;
+    }
+
+    /* ── Fade-in on scroll ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity .65s ease, transform .65s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Navbar link underline ── */
+    .nav-link {
+      position: relative;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #43a047;
+      border-radius: 9999px;
+      transition: width .3s ease;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    /* ── Section heading ── */
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      border-radius: 9999px;
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    /* ── Feature / Pricing card hover ── */
+    .card-hover {
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+    .card-hover:hover {
+      transform: translateY(-5px);
+    }
+
+    /* ── FAQ ── */
+    .faq-body {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height .35s ease, opacity .3s ease, padding .3s ease;
+    }
+
+    .faq-item.open .faq-body {
+      max-height: 400px;
+      opacity: 1;
+    }
+
+    .faq-icon {
+      transition: transform .25s ease;
+    }
+
+    .faq-item.open .faq-icon {
+      transform: rotate(45deg);
+    }
+
+    /* ── HowItWorks step ── */
+    .step-card {
+      border: 2px solid #f3f4f6;
+      background: rgba(249, 250, 251, 0.6);
+      transition: all .4s ease;
+      cursor: pointer;
+    }
+
+    .step-card.active {
+      border-color: #86efac;
+      background: #fff;
+      box-shadow: 0 20px 60px rgba(46, 125, 50, 0.08);
+    }
+
+    .step-body {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height .3s ease, opacity .3s ease;
+    }
+
+    .step-card.active .step-body {
+      max-height: 200px;
+      opacity: 1;
+    }
+
+    .step-preview {
+      display: none;
+    }
+
+    .step-preview.active {
+      display: block;
+    }
+
+    /* ── Pricing popular ── */
+    .pricing-popular {
+      box-shadow: 0 0 0 2px #43a047, 0 24px 60px rgba(46, 125, 50, 0.25);
+    }
+
+    /* ── Testimonials drag ── */
+    .drag-track {
+      cursor: grab;
+      user-select: none;
+    }
+
+    .drag-track.dragging {
+      cursor: grabbing;
+    }
+
+    /* ── Responsive hero text ── */
+    @media(max-width:640px) {
+      .hero-h1 {
+        font-size: 3.2rem !important;
+        line-height: 1.05 !important;
+      }
+    }
+
+    @media(max-width:400px) {
+      .hero-h1 {
+        font-size: 2.6rem !important;
+      }
+    }
+
+    /* ── Step2 progress ── */
+    @keyframes progress-fill {
+      from {
+        width: 0%
+      }
+
+      to {
+        width: 100%
+      }
+    }
+  </style>
+</head>
+
+<body class="font-sans bg-white text-gray-900">
+
+  <!-- ════════════════════════════════════════
+     NAVBAR
+════════════════════════════════════════ -->
+  <header id="navbar" class="fixed top-0 left-0 right-0 z-50">
+    <nav id="nav-inner" class="mx-auto flex items-center justify-between transition-all duration-700"
+      style="height:56px;max-width:100%;background:rgba(255,255,255,0.78);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);padding-left:32px;padding-right:32px;border-radius:0;box-shadow:0 1px 0 rgba(0,0,0,0.06);">
+      <!-- Logo -->
+      <a href="/" aria-label="HostingLotus" class="shrink-0 flex items-center">
+        <img src="./public/hosting-lotus-logo.png" alt="HostingLotus" class="h-8 w-auto object-contain">
+      </a>
+      <!-- Nav links -->
+      <ul class="hidden md:flex items-center gap-8 list-none">
+        <li><a href="#features"
+            class="nav-link text-sm font-medium text-gray-600 hover:text-brand-600 transition-colors">ฟีเจอร์</a></li>
+        <li><a href="#how-it-works"
+            class="nav-link text-sm font-medium text-gray-600 hover:text-brand-600 transition-colors">วิธีใช้งาน</a>
+        </li>
+        <li><a href="#pricing"
+            class="nav-link text-sm font-medium text-gray-600 hover:text-brand-600 transition-colors">ราคา</a></li>
+        <li><a href="#faq"
+            class="nav-link text-sm font-medium text-gray-600 hover:text-brand-600 transition-colors">FAQ</a></li>
+      </ul>
+      <!-- Right -->
+      <div class="flex items-center gap-3 shrink-0">
+        <a href="#"
+          class="hidden md:inline text-sm text-gray-500 hover:text-brand-600 transition-colors">เข้าสู่ระบบ</a>
+        <a href="#"
+          class="px-4 py-2 rounded-xl text-white text-sm font-bold transition-all hover:scale-105 active:scale-95"
+          style="background:#2e7d32;box-shadow:0 4px 14px rgba(46,125,50,0.3);">
+          เริ่มฟรีเลย →
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ════════════════════════════════════════
+     HERO
+════════════════════════════════════════ -->
+  <section id="hero" class="relative min-h-screen flex items-center pt-32 pb-24 overflow-hidden bg-hero">
+    <!-- Three.js particle bg -->
+    <div id="three-hero-bg" class="absolute inset-0 pointer-events-none" style="z-index:0;"></div>
+
+    <!-- Blobs -->
+    <div class="absolute pointer-events-none animate-blob"
+      style="top:-10%;left:-8%;width:720px;height:720px;border-radius:9999px;background:radial-gradient(circle,rgba(255,179,198,.70) 0%,rgba(255,172,190,.35) 45%,transparent 70%);">
+    </div>
+    <div class="absolute pointer-events-none animate-blob delay-4000"
+      style="top:0%;right:-10%;width:620px;height:620px;border-radius:9999px;background:radial-gradient(circle,rgba(255,236,153,.65) 0%,rgba(255,220,80,.30) 40%,transparent 70%);">
+    </div>
+    <div class="absolute pointer-events-none animate-blob-slow delay-2000"
+      style="bottom:-20%;left:30%;width:500px;height:500px;border-radius:9999px;background:radial-gradient(circle,rgba(184,240,200,.45) 0%,transparent 65%);">
+    </div>
+    <div class="absolute pointer-events-none animate-blob delay-6000"
+      style="opacity:.5;top:45%;left:55%;width:380px;height:380px;border-radius:9999px;background:radial-gradient(circle,rgba(233,30,99,.18) 0%,transparent 65%);">
+    </div>
+
+    <!-- Grid lines -->
+    <div class="absolute inset-0 pointer-events-none"
+      style="opacity:.025;background-image:linear-gradient(rgba(0,0,0,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.5) 1px,transparent 1px);background-size:60px 60px;">
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-6 w-full grid lg:grid-cols-2 gap-16 items-center">
+      <!-- LEFT: copy -->
+      <div id="hero-copy" class="space-y-7" style="opacity:0;transform:translateY(44px);">
+        <div class="space-y-1">
+          <h1 class="hero-h1 font-extrabold tracking-tight text-gray-950" style="font-size:5.5rem;line-height:1.0;">
+            สร้างเว็บไซต์</h1>
+          <h1 class="hero-h1 font-extrabold tracking-tight text-gradient-vivid"
+            style="font-size:5.5rem;line-height:1.0;">ด้วย AI</h1>
+          <h1 class="hero-h1 font-extrabold tracking-tight text-gray-950" style="font-size:5.5rem;line-height:1.0;">ใน 5
+            นาที</h1>
+        </div>
+        <p class="text-xl text-gray-600 leading-relaxed" style="max-width:480px;">
+          สร้างเว็บสวยพร้อมออนไลน์ ใช้งานได้ทันที ไม่ต้องมีความรู้เรื่องโค้ด แค่เล่าให้น้องใบบัวฟัง
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <a href="#"
+            class="inline-flex items-center gap-2 px-8 py-4 rounded-2xl text-white font-bold text-lg transition-all hover:scale-105 hover:-translate-y-0.5 active:scale-[.97]"
+            style="background:#2e7d32;box-shadow:0 8px 24px rgba(46,125,50,.30);">
+            <!-- zap icon -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+            </svg>
+            เริ่มสร้างด้วย AI ฟรี
+          </a>
+          <a href="#demo"
+            class="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-white border border-gray-200 text-gray-800 font-bold text-lg hover:border-brand-300 hover:text-brand-700 transition-all shadow-sm hover:scale-105 hover:-translate-y-0.5">
+            <!-- play icon -->
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="5 3 19 12 5 21 5 3" />
+            </svg>
+            ดูวิดีโอสาธิต
+          </a>
+        </div>
+        <div class="flex flex-wrap gap-x-6 gap-y-2 text-sm text-gray-500 pt-1">
+          <span class="flex items-center gap-1.5"><!-- check --><svg width="13" height="13" viewBox="0 0 24 24"
+              fill="none" stroke="#43a047" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>ไม่ต้องบัตรเครดิต</span>
+          <span class="flex items-center gap-1.5"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+              stroke="#43a047" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>เครดิตฟรี 50 ครั้งแรก</span>
+          <span class="flex items-center gap-1.5"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+              stroke="#43a047" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>เริ่มใช้งานได้ทันที</span>
+          <span class="flex items-center gap-1.5"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+              stroke="#43a047" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>Support ภาษาไทย</span>
+        </div>
+      </div>
+
+      <!-- RIGHT: mockup -->
+      <div id="hero-mockup" class="relative hidden lg:block" style="opacity:0;transform:translate(70px,0) scale(.93);">
+        <div class="relative" style="overflow:visible;">
+          <div class="rounded-2xl overflow-hidden">
+            <img src="./public/hero-mockup.png" alt="BAIBUA AI Web Builder" class="w-full h-auto"
+              style="object-fit:cover;">
+          </div>
+          <!-- mascot-1 -->
+          <div class="absolute pointer-events-none select-none hidden md:block z-20 animate-float"
+            style="bottom:-32px;left:-64px;">
+            <img src="./public/mascot-1.png" alt="น้องใบบัว" width="200" height="200" style="object-fit:contain;">
+          </div>
+        </div>
+        <!-- floating cards -->
+        <div class="absolute glass rounded-2xl px-4 py-3 shadow-xl animate-float" style="top:-20px;right:-40px;">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-full flex items-center justify-center text-white text-base animate-pulse-green"
+              style="background:#43a047;">✓</div>
+            <div>
+              <div class="text-xs font-bold text-gray-800">Publish สำเร็จ!</div>
+              <div class="text-xs text-gray-400">my-shop.hostinglotus.cloud</div>
+            </div>
+          </div>
+        </div>
+        <div class="absolute glass rounded-2xl px-4 py-3 shadow-xl whitespace-nowrap animate-float"
+          style="bottom:-20px;left:50%;transform:translateX(-50%);animation-delay:.6s;">
+          <div class="text-xs font-bold text-gray-800">สร้างเว็บไซต์ด้วย AI ใน 5 นาที</div>
+        </div>
+        <div class="absolute glass rounded-2xl px-4 py-3 shadow-xl animate-float"
+          style="bottom:64px;right:-40px;animation-delay:1.2s;">
+          <div class="text-xs font-bold text-gray-800">สร้างเว็บสวยพร้อมออนไลน์ ใช้งานได้ทันที</div>
+        </div>
+        <div class="absolute glass rounded-2xl px-4 py-3 shadow-xl animate-float"
+          style="top:-20px;left:-40px;animation-delay:.8s;">
+          <div class="text-xs font-bold text-gray-800">ไม่ต้องมีความรู้เรื่องโค้ด</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div id="scroll-indicator" class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+      style="opacity:0;">
+      <span class="text-xs text-gray-400 font-medium tracking-wider uppercase">เลื่อนลง</span>
+      <div class="w-5 h-9 rounded-full border-2 border-gray-300 flex items-start justify-center p-1">
+        <div class="w-1.5 h-2 rounded-full animate-scroll" style="background:#43a047;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+     DEMO VIDEO
+════════════════════════════════════════ -->
+  <section id="demo" class="relative w-full max-w-7xl mx-auto px-6 py-12">
+    <div class="relative rounded-3xl overflow-hidden shadow-2xl bg-black border border-gray-100"
+      style="aspect-ratio:16/9;">
+      <video id="demo-video" src="./public/demo.mp4" class="w-full h-full object-cover" autoplay muted loop
+        playsinline></video>
+      <!-- controls overlay -->
+      <div class="absolute bottom-6 left-6 right-6 flex items-end justify-between z-10">
+        <button id="btn-play-pause" class="p-3 rounded-full text-white transition-all hover:scale-110"
+          style="background:rgba(0,0,0,.4);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.1);">
+          <!-- pause icon (default state) -->
+          <svg id="icon-pause" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <rect x="6" y="4" width="4" height="16" />
+            <rect x="14" y="4" width="4" height="16" />
+          </svg>
+          <svg id="icon-play" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="display:none;">
+            <polygon points="5 3 19 12 5 21 5 3" />
+          </svg>
+        </button>
+        <button id="btn-mute" class="p-3 rounded-full text-white transition-all hover:scale-110"
+          style="background:rgba(0,0,0,.4);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.1);">
+          <!-- volume-x (muted default) -->
+          <svg id="icon-muted" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+            <line x1="23" y1="9" x2="17" y2="15" />
+            <line x1="17" y1="9" x2="23" y2="15" />
+          </svg>
+          <svg id="icon-volume" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+     EXAMPLES (auto-scroll marquee)
+════════════════════════════════════════ -->
+  <section id="examples" class="py-24 bg-white overflow-hidden relative">
+    <div class="absolute pointer-events-none"
+      style="top:50%;left:25%;transform:translateY(-50%);width:600px;height:300px;border-radius:9999px;filter:blur(60px);opacity:.1;background:radial-gradient(ellipse,#86efac 0%,transparent 70%);">
+    </div>
+
+    <!-- Heading -->
+    <div class="reveal text-center mb-14 px-6">
+      <span class="eyebrow"
+        style="background:rgba(255,240,246,.9);border:1px solid rgba(233,30,99,.22);color:#ad1457;">ตัวอย่างเว็บ</span>
+      <h2 class="text-4xl md:text-5xl font-extrabold text-gray-950 leading-tight">
+        เว็บที่สร้างด้วย <span class="text-gradient-vivid">HostingLotus AI</span>
+      </h2>
+      <p class="mt-3 text-gray-500 text-lg">ตัวอย่างจริงจากธุรกิจไทยที่ใช้ AI สร้างเว็บกับเรา</p>
+    </div>
+
+    <!-- Row 1 — scroll left -->
+    <div class="mb-5 overflow-hidden relative">
+      <div class="pointer-events-none absolute inset-y-0 left-0 w-24 z-10"
+        style="background:linear-gradient(to right,#fff,transparent);"></div>
+      <div class="pointer-events-none absolute inset-y-0 right-0 w-24 z-10"
+        style="background:linear-gradient(to left,#fff,transparent);"></div>
+      <div class="marquee-track animate-marquee">
+        <!-- 4 unique + 4 duplicates for seamless loop -->
+        <div class="flex-shrink-0 rounded-2xl overflow-hidden border border-gray-100 shadow-sm group bg-white"
+          style="width:320px;">
+          <div style="aspect-ratio:16/9;overflow:hidden;"><img src="./public/examples/freshbox-delivery.png"
+              alt="FreshBox Delivery"
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-gray-950 text-base mb-1">FreshBox Delivery</h3>
+            <p class="text-gray-500 text-sm leading-snug mb-3">
+              บริการจัดส่งอาหารคลีนและอาหารเพื่อสุขภาพส่งตรงถึงบ้านรายสัปดาห์</p>
+            <a href="#" class="text-green-600 font-semibold text-sm hover:underline">ดูเพิ่มเติม →</a>
+          </div>
+        </div>
+        <div class="flex-shrink-0 rounded-2xl overflow-hidden border border-gray-100 shadow-sm group bg-white"
+          style="width:320px;">
+          <div style="aspect-ratio:16/9;overflow:hidden;"><img src="./public/examples/vivid-creative-studio.png"
+              alt="Vivid Creative Studio"
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-gray-950 text-base mb-1">Vivid Creative Studio</h3>
+            <p class="text-gray-500 text-sm leading-snug mb-3">สตูดิโอครีเอทีฟครบวงจร
+              รับออกแบบแบรนด์และถ่ายภาพสินค้าระดับมืออาชีพ</p>
+            <a href="#" class="text-green-600 font-semibold text-sm hover:underline">ดูเพิ่มเติม →</a>
+          </div>
+        </div>
+        <div class="flex-shrink-0 rounded-2xl overflow-hidden border border-gray-100 shadow-sm group bg-white"
+          style="width:320px;">
+          <div style="aspect-ratio:16/9;overflow:hidden;"><img src="./public/examples/thepavilion.png"
+              alt="The Pavilion"
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-gray-950 text-base mb-1">The Pavilion</h3>
+            <p class="text-gray-500 text-sm leading-snug mb-3">โครงการอสังหาริมทรัพย์ระดับ Premium ใจกลางเมือง
+              พร้อมสิ่งอำนวยความสะดวกครบครัน</p>
+            <a href="#" class="text-green-600 font-semibold text-sm hover:underline">ดูเพิ่มเติม →</a>
+          </div>
+        </div>
+        <div class="flex-shrink-0 rounded-2xl overflow-hidden border border-gray-100 shadow-sm group bg-white"
+          style="width:320px;">
+          <div style="aspect-ratio:16/9;overflow:hidden;"><img src="./public/examples/stillplant.png" alt="Still Plant"
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-gray-950 text-base mb-1">Still Plant</h3>
+            <p class="text-gray-500 text-sm leading-snug mb-3">ร้านต้นไม้และของตกแต่งบ้านสไตล์มินิมอล
+              คัดสรรพันธุ์หายากสำหรับคนรักธรรมชาติ</p>
+            <a href="#" class="text-green-600 font-semibold text-sm hover:underline">ดูเพิ่มเติม →</a>
+          </div>
+        </div>
+        <!-- duplicates for seamless loop -->
+        <div class="flex-shrink-0 rounded-2xl overflow-hidden border border-gray-100 shadow-sm group bg-white"
+          style="width:320px;">
+          <div style="aspect-ratio:16/9;overflow:hidden;"><img src="./public/examples/freshbox-delivery.png"
+              alt="FreshBox Delivery"
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-gray-950 text-base mb-1">FreshBox Delivery</h3>
+            <p class="text-gray-500 text-sm leading-snug mb-3">
+              บริการจัดส่งอาหารคลีนและอาหารเพื่อสุขภาพส่งตรงถึงบ้านรายสัปดาห์</p>
+            <a href="#" class="text-green-600 font-semibold text-sm hover:underline">ดูเพิ่มเติม →</a>
+          </div>
+        </div>
+        <div class="flex-shrink-0 rounded-2xl overflow-hidden border border-gray-100 shadow-sm group bg-white"
+          style="width:320px;">
+          <div style="aspect-ratio:16/9;overflow:hidden;"><img src="./public/examples/vivid-creative-studio.png"
+              alt="Vivid Creative Studio"
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-gray-950 text-base mb-1">Vivid Creative Studio</h3>
+            <p class="text-gray-500 text-sm leading-snug mb-3">สตูดิโอครีเอทีฟครบวงจร
+              รับออกแบบแบรนด์และถ่ายภาพสินค้าระดับมืออาชีพ</p>
+            <a href="#" class="text-green-600 font-semibold text-sm hover:underline">ดูเพิ่มเติม →</a>
+          </div>
+        </div>
+        <div class="flex-shrink-0 rounded-2xl overflow-hidden border border-gray-100 shadow-sm group bg-white"
+          style="width:320px;">
+          <div style="aspect-ratio:16/9;overflow:hidden;"><img src="./public/examples/thepavilion.png"
+              alt="The Pavilion"
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-gray-950 text-base mb-1">The Pavilion</h3>
+            <p class="text-gray-500 text-sm leading-snug mb-3">โครงการอสังหาริมทรัพย์ระดับ Premium ใจกลางเมือง
+              พร้อมสิ่งอำนวยความสะดวกครบครัน</p>
+            <a href="#" class="text-green-600 font-semibold text-sm hover:underline">ดูเพิ่มเติม →</a>
+          </div>
+        </div>
+        <div class="flex-shrink-0 rounded-2xl overflow-hidden border border-gray-100 shadow-sm group bg-white"
+          style="width:320px;">
+          <div style="aspect-ratio:16/9;overflow:hidden;"><img src="./public/examples/stillplant.png" alt="Still Plant"
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-gray-950 text-base mb-1">Still Plant</h3>
+            <p class="text-gray-500 text-sm leading-snug mb-3">ร้านต้นไม้และของตกแต่งบ้านสไตล์มินิมอล
+              คัดสรรพันธุ์หายากสำหรับคนรักธรรมชาติ</p>
+            <a href="#" class="text-green-600 font-semibold text-sm hover:underline">ดูเพิ่มเติม →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2 — scroll right -->
+    <div class="mb-5 overflow-hidden relative">
+      <div class="pointer-events-none absolute inset-y-0 left-0 w-24 z-10"
+        style="background:linear-gradient(to right,#fff,transparent);"></div>
+      <div class="pointer-events-none absolute inset-y-0 right-0 w-24 z-10"
+        style="background:linear-gradient(to left,#fff,transparent);"></div>
+      <div class="marquee-track animate-marquee-reverse">
+        <div class="flex-shrink-0 rounded-2xl overflow-hidden border border-gray-100 shadow-sm group bg-white"
+          style="width:320px;">
+          <div style="aspect-ratio:16/9;overflow:hidden;"><img src="./public/examples/stillplant.png" alt="Still Plant"
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-gray-950 text-base mb-1">Still Plant</h3>
+            <p class="text-gray-500 text-sm leading-snug mb-3">ร้านต้นไม้และของตกแต่งบ้านสไตล์มินิมอล
+              คัดสรรพันธุ์หายากสำหรับคนรักธรรมชาติ</p>
+            <a href="#" class="text-green-600 font-semibold text-sm hover:underline">ดูเพิ่มเติม →</a>
+          </div>
+        </div>
+        <div class="flex-shrink-0 rounded-2xl overflow-hidden border border-gray-100 shadow-sm group bg-white"
+          style="width:320px;">
+          <div style="aspect-ratio:16/9;overflow:hidden;"><img src="./public/examples/thepavilion.png"
+              alt="The Pavilion"
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-gray-950 text-base mb-1">The Pavilion</h3>
+            <p class="text-gray-500 text-sm leading-snug mb-3">โครงการอสังหาริมทรัพย์ระดับ Premium ใจกลางเมือง
+              พร้อมสิ่งอำนวยความสะดวกครบครัน</p>
+            <a href="#" class="text-green-600 font-semibold text-sm hover:underline">ดูเพิ่มเติม →</a>
+          </div>
+        </div>
+        <div class="flex-shrink-0 rounded-2xl overflow-hidden border border-gray-100 shadow-sm group bg-white"
+          style="width:320px;">
+          <div style="aspect-ratio:16/9;overflow:hidden;"><img src="./public/examples/vivid-creative-studio.png"
+              alt="Vivid Creative Studio"
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-gray-950 text-base mb-1">Vivid Creative Studio</h3>
+            <p class="text-gray-500 text-sm leading-snug mb-3">สตูดิโอครีเอทีฟครบวงจร
+              รับออกแบบแบรนด์และถ่ายภาพสินค้าระดับมืออาชีพ</p>
+            <a href="#" class="text-green-600 font-semibold text-sm hover:underline">ดูเพิ่มเติม →</a>
+          </div>
+        </div>
+        <div class="flex-shrink-0 rounded-2xl overflow-hidden border border-gray-100 shadow-sm group bg-white"
+          style="width:320px;">
+          <div style="aspect-ratio:16/9;overflow:hidden;"><img src="./public/examples/freshbox-delivery.png"
+              alt="FreshBox Delivery"
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-gray-950 text-base mb-1">FreshBox Delivery</h3>
+            <p class="text-gray-500 text-sm leading-snug mb-3">
+              บริการจัดส่งอาหารคลีนและอาหารเพื่อสุขภาพส่งตรงถึงบ้านรายสัปดาห์</p>
+            <a href="#" class="text-green-600 font-semibold text-sm hover:underline">ดูเพิ่มเติม →</a>
+          </div>
+        </div>
+        <!-- duplicates for seamless loop -->
+        <div class="flex-shrink-0 rounded-2xl overflow-hidden border border-gray-100 shadow-sm group bg-white"
+          style="width:320px;">
+          <div style="aspect-ratio:16/9;overflow:hidden;"><img src="./public/examples/stillplant.png" alt="Still Plant"
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-gray-950 text-base mb-1">Still Plant</h3>
+            <p class="text-gray-500 text-sm leading-snug mb-3">ร้านต้นไม้และของตกแต่งบ้านสไตล์มินิมอล
+              คัดสรรพันธุ์หายากสำหรับคนรักธรรมชาติ</p>
+            <a href="#" class="text-green-600 font-semibold text-sm hover:underline">ดูเพิ่มเติม →</a>
+          </div>
+        </div>
+        <div class="flex-shrink-0 rounded-2xl overflow-hidden border border-gray-100 shadow-sm group bg-white"
+          style="width:320px;">
+          <div style="aspect-ratio:16/9;overflow:hidden;"><img src="./public/examples/thepavilion.png"
+              alt="The Pavilion"
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-gray-950 text-base mb-1">The Pavilion</h3>
+            <p class="text-gray-500 text-sm leading-snug mb-3">โครงการอสังหาริมทรัพย์ระดับ Premium ใจกลางเมือง
+              พร้อมสิ่งอำนวยความสะดวกครบครัน</p>
+            <a href="#" class="text-green-600 font-semibold text-sm hover:underline">ดูเพิ่มเติม →</a>
+          </div>
+        </div>
+        <div class="flex-shrink-0 rounded-2xl overflow-hidden border border-gray-100 shadow-sm group bg-white"
+          style="width:320px;">
+          <div style="aspect-ratio:16/9;overflow:hidden;"><img src="./public/examples/vivid-creative-studio.png"
+              alt="Vivid Creative Studio"
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-gray-950 text-base mb-1">Vivid Creative Studio</h3>
+            <p class="text-gray-500 text-sm leading-snug mb-3">สตูดิโอครีเอทีฟครบวงจร
+              รับออกแบบแบรนด์และถ่ายภาพสินค้าระดับมืออาชีพ</p>
+            <a href="#" class="text-green-600 font-semibold text-sm hover:underline">ดูเพิ่มเติม →</a>
+          </div>
+        </div>
+        <div class="flex-shrink-0 rounded-2xl overflow-hidden border border-gray-100 shadow-sm group bg-white"
+          style="width:320px;">
+          <div style="aspect-ratio:16/9;overflow:hidden;"><img src="./public/examples/freshbox-delivery.png"
+              alt="FreshBox Delivery"
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-gray-950 text-base mb-1">FreshBox Delivery</h3>
+            <p class="text-gray-500 text-sm leading-snug mb-3">
+              บริการจัดส่งอาหารคลีนและอาหารเพื่อสุขภาพส่งตรงถึงบ้านรายสัปดาห์</p>
+            <a href="#" class="text-green-600 font-semibold text-sm hover:underline">ดูเพิ่มเติม →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 3 — scroll left -->
+    <div class="overflow-hidden relative">
+      <div class="pointer-events-none absolute inset-y-0 left-0 w-24 z-10"
+        style="background:linear-gradient(to right,#fff,transparent);"></div>
+      <div class="pointer-events-none absolute inset-y-0 right-0 w-24 z-10"
+        style="background:linear-gradient(to left,#fff,transparent);"></div>
+      <div class="marquee-track animate-marquee">
+        <div class="flex-shrink-0 rounded-2xl overflow-hidden border border-gray-100 shadow-sm group bg-white"
+          style="width:320px;">
+          <div style="aspect-ratio:16/9;overflow:hidden;"><img src="./public/examples/thepavilion.png"
+              alt="The Pavilion"
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-gray-950 text-base mb-1">The Pavilion</h3>
+            <p class="text-gray-500 text-sm leading-snug mb-3">โครงการอสังหาริมทรัพย์ระดับ Premium ใจกลางเมือง
+              พร้อมสิ่งอำนวยความสะดวกครบครัน</p>
+            <a href="#" class="text-green-600 font-semibold text-sm hover:underline">ดูเพิ่มเติม →</a>
+          </div>
+        </div>
+        <div class="flex-shrink-0 rounded-2xl overflow-hidden border border-gray-100 shadow-sm group bg-white"
+          style="width:320px;">
+          <div style="aspect-ratio:16/9;overflow:hidden;"><img src="./public/examples/freshbox-delivery.png"
+              alt="FreshBox Delivery"
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-gray-950 text-base mb-1">FreshBox Delivery</h3>
+            <p class="text-gray-500 text-sm leading-snug mb-3">
+              บริการจัดส่งอาหารคลีนและอาหารเพื่อสุขภาพส่งตรงถึงบ้านรายสัปดาห์</p>
+            <a href="#" class="text-green-600 font-semibold text-sm hover:underline">ดูเพิ่มเติม →</a>
+          </div>
+        </div>
+        <div class="flex-shrink-0 rounded-2xl overflow-hidden border border-gray-100 shadow-sm group bg-white"
+          style="width:320px;">
+          <div style="aspect-ratio:16/9;overflow:hidden;"><img src="./public/examples/stillplant.png" alt="Still Plant"
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-gray-950 text-base mb-1">Still Plant</h3>
+            <p class="text-gray-500 text-sm leading-snug mb-3">ร้านต้นไม้และของตกแต่งบ้านสไตล์มินิมอล
+              คัดสรรพันธุ์หายากสำหรับคนรักธรรมชาติ</p>
+            <a href="#" class="text-green-600 font-semibold text-sm hover:underline">ดูเพิ่มเติม →</a>
+          </div>
+        </div>
+        <div class="flex-shrink-0 rounded-2xl overflow-hidden border border-gray-100 shadow-sm group bg-white"
+          style="width:320px;">
+          <div style="aspect-ratio:16/9;overflow:hidden;"><img src="./public/examples/vivid-creative-studio.png"
+              alt="Vivid Creative Studio"
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-gray-950 text-base mb-1">Vivid Creative Studio</h3>
+            <p class="text-gray-500 text-sm leading-snug mb-3">สตูดิโอครีเอทีฟครบวงจร
+              รับออกแบบแบรนด์และถ่ายภาพสินค้าระดับมืออาชีพ</p>
+            <a href="#" class="text-green-600 font-semibold text-sm hover:underline">ดูเพิ่มเติม →</a>
+          </div>
+        </div>
+        <!-- duplicates for seamless loop -->
+        <div class="flex-shrink-0 rounded-2xl overflow-hidden border border-gray-100 shadow-sm group bg-white"
+          style="width:320px;">
+          <div style="aspect-ratio:16/9;overflow:hidden;"><img src="./public/examples/thepavilion.png"
+              alt="The Pavilion"
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-gray-950 text-base mb-1">The Pavilion</h3>
+            <p class="text-gray-500 text-sm leading-snug mb-3">โครงการอสังหาริมทรัพย์ระดับ Premium ใจกลางเมือง
+              พร้อมสิ่งอำนวยความสะดวกครบครัน</p>
+            <a href="#" class="text-green-600 font-semibold text-sm hover:underline">ดูเพิ่มเติม →</a>
+          </div>
+        </div>
+        <div class="flex-shrink-0 rounded-2xl overflow-hidden border border-gray-100 shadow-sm group bg-white"
+          style="width:320px;">
+          <div style="aspect-ratio:16/9;overflow:hidden;"><img src="./public/examples/freshbox-delivery.png"
+              alt="FreshBox Delivery"
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-gray-950 text-base mb-1">FreshBox Delivery</h3>
+            <p class="text-gray-500 text-sm leading-snug mb-3">
+              บริการจัดส่งอาหารคลีนและอาหารเพื่อสุขภาพส่งตรงถึงบ้านรายสัปดาห์</p>
+            <a href="#" class="text-green-600 font-semibold text-sm hover:underline">ดูเพิ่มเติม →</a>
+          </div>
+        </div>
+        <div class="flex-shrink-0 rounded-2xl overflow-hidden border border-gray-100 shadow-sm group bg-white"
+          style="width:320px;">
+          <div style="aspect-ratio:16/9;overflow:hidden;"><img src="./public/examples/stillplant.png" alt="Still Plant"
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-gray-950 text-base mb-1">Still Plant</h3>
+            <p class="text-gray-500 text-sm leading-snug mb-3">ร้านต้นไม้และของตกแต่งบ้านสไตล์มินิมอล
+              คัดสรรพันธุ์หายากสำหรับคนรักธรรมชาติ</p>
+            <a href="#" class="text-green-600 font-semibold text-sm hover:underline">ดูเพิ่มเติม →</a>
+          </div>
+        </div>
+        <div class="flex-shrink-0 rounded-2xl overflow-hidden border border-gray-100 shadow-sm group bg-white"
+          style="width:320px;">
+          <div style="aspect-ratio:16/9;overflow:hidden;"><img src="./public/examples/vivid-creative-studio.png"
+              alt="Vivid Creative Studio"
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-gray-950 text-base mb-1">Vivid Creative Studio</h3>
+            <p class="text-gray-500 text-sm leading-snug mb-3">สตูดิโอครีเอทีฟครบวงจร
+              รับออกแบบแบรนด์และถ่ายภาพสินค้าระดับมืออาชีพ</p>
+            <a href="#" class="text-green-600 font-semibold text-sm hover:underline">ดูเพิ่มเติม →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+     TEMPLATES GALLERY
+════════════════════════════════════════ -->
+  <section id="templates" class="py-24 px-6 relative overflow-hidden"
+    style="background:linear-gradient(135deg,rgba(252,231,243,.45) 0%,rgba(240,253,244,.6) 50%,rgba(254,252,232,.4) 100%);">
+    <div class="absolute inset-0 pointer-events-none"
+      style="background:radial-gradient(ellipse 70% 50% at 80% 50%,rgba(187,247,208,.3) 0%,transparent 60%),radial-gradient(ellipse 50% 60% at 10% 30%,rgba(251,207,232,.25) 0%,transparent 55%);">
+    </div>
+    <div class="max-w-6xl mx-auto relative z-10">
+
+      <!-- Header row -->
+      <div class="reveal flex items-center justify-between mb-10">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl flex items-center justify-center" style="background:#16a34a;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7" rx="1" />
+              <rect x="14" y="3" width="7" height="7" rx="1" />
+              <rect x="3" y="14" width="7" height="7" rx="1" />
+              <rect x="14" y="14" width="7" height="7" rx="1" />
+            </svg>
+          </div>
+          <h2 class="text-2xl md:text-3xl font-extrabold text-gray-950">เริ่มจากเทมเพลตสำเร็จรูป</h2>
+        </div>
+        <a href="#" class="text-green-700 font-semibold text-sm md:text-base hover:underline flex items-center gap-1">
+          ดูทั้งหมด <span>→</span>
+        </a>
+      </div>
+
+      <!-- Template grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+
+        <!-- Card 1 -->
+        <div class="reveal bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 group card-hover">
+          <div style="aspect-ratio:4/3;overflow:hidden;">
+            <img src="./public/examples/stillplant.png" alt="The Serenity Wellness"
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="p-5">
+            <h3 class="font-extrabold text-lg mb-3" style="color:#000000;">The Serenity Wellness</h3>
+            <a href="#" class="inline-flex items-center gap-1 text-green-700 font-semibold text-sm hover:underline">
+              ใช้เทมเพลตนี้ <div class="icon-container">
+                <svg class="icon-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M7 17L17 7M17 7H9M17 7V15" />
+                </svg>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="reveal bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 group card-hover">
+          <div style="aspect-ratio:4/3;overflow:hidden;">
+            <img src="./public/examples/thepavilion.png" alt="โรงเรียนเบญจมเทวานุสรณ์"
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="p-5">
+            <h3 class="font-extrabold text-lg mb-3" style="color:#000000;">โรงเรียนเบญจมเทวานุสรณ์</h3>
+            <a href="#" class="inline-flex items-center gap-1 text-green-700 font-semibold text-sm hover:underline">
+              ใช้เทมเพลตนี้ <div class="icon-container">
+                <svg class="icon-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M7 17L17 7M17 7H9M17 7V15" />
+                </svg>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="reveal bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 group card-hover">
+          <div style="aspect-ratio:4/3;overflow:hidden;">
+            <img src="./public/examples/vivid-creative-studio.png" alt="Scents &amp; Co."
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="p-5">
+            <h3 class="font-extrabold text-lg mb-3" style="color:#000000;">Scents &amp; Co.</h3>
+            <a href="#" class="inline-flex items-center gap-1 text-green-700 font-semibold text-sm hover:underline">
+              ใช้เทมเพลตนี้ <div class="icon-container">
+                <svg class="icon-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M7 17L17 7M17 7H9M17 7V15" />
+                </svg>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="reveal bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 group card-hover">
+          <div style="aspect-ratio:4/3;overflow:hidden;">
+            <img src="./public/examples/stillplant.png" alt="Still Plant - Modern Greenery"
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="p-5">
+            <h3 class="font-extrabold text-lg mb-3" style="color:#000000;">Still Plant - Modern Greenery</h3>
+            <a href="#" class="inline-flex items-center gap-1 text-green-700 font-semibold text-sm hover:underline">
+              ใช้เทมเพลตนี้ <div class="icon-container">
+                <svg class="icon-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M7 17L17 7M17 7H9M17 7V15" />
+                </svg>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="reveal bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 group card-hover">
+          <div style="aspect-ratio:4/3;overflow:hidden;">
+            <img src="./public/examples/freshbox-delivery.png" alt="พี.พี.เม็ททอลซีท อ่างทอง"
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="p-5">
+            <h3 class="font-extrabold text-lg mb-3 line-clamp-1" style="color:#000000;">พี.พี.เม็ททอลซีท อ่างทอง
+              หลังคาเหล็ก</h3>
+            <a href="#" class="inline-flex items-center gap-1 text-green-700 font-semibold text-sm hover:underline">
+              ใช้เทมเพลตนี้ <div class="icon-container">
+                <svg class="icon-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M7 17L17 7M17 7H9M17 7V15" />
+                </svg>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="reveal bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 group card-hover">
+          <div style="aspect-ratio:4/3;overflow:hidden;">
+            <img src="./public/examples/thepavilion.png" alt="RedHeadballoon"
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="p-5">
+            <h3 class="font-extrabold text-lg mb-3" style="color:#000000;">RedHeadballoon</h3>
+            <a href="#" class="inline-flex items-center gap-1 text-green-700 font-semibold text-sm hover:underline">
+              ใช้เทมเพลตนี้ <div class="icon-container">
+                <svg class="icon-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M7 17L17 7M17 7H9M17 7V15" />
+                </svg>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Card 7 -->
+        <div class="reveal bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 group card-hover">
+          <div style="aspect-ratio:4/3;overflow:hidden;">
+            <img src="./public/examples/vivid-creative-studio.png" alt="Vivid Creative Studio"
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="p-5">
+            <h3 class="font-extrabold text-lg mb-3" style="color:#000000;">Vivid Creative Studio</h3>
+            <a href="#" class="inline-flex items-center gap-1 text-green-700 font-semibold text-sm hover:underline">
+              ใช้เทมเพลตนี้ <div class="icon-container">
+                <svg class="icon-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M7 17L17 7M17 7H9M17 7V15" />
+                </svg>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Card 8 -->
+        <div class="reveal bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 group card-hover">
+          <div style="aspect-ratio:4/3;overflow:hidden;">
+            <img src="./public/examples/thepavilion.png" alt="The Pavilion"
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="p-5">
+            <h3 class="font-extrabold text-lg mb-3" style="color:#000000;">The Pavilion</h3>
+            <a href="#" class="inline-flex items-center gap-1 text-green-700 font-semibold text-sm hover:underline">
+              ใช้เทมเพลตนี้<div class="icon-container">
+                <svg class="icon-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M7 17L17 7M17 7H9M17 7V15" />
+                </svg>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Card 9 -->
+        <div class="reveal bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 group card-hover">
+          <div style="aspect-ratio:4/3;overflow:hidden;">
+            <img src="./public/examples/freshbox-delivery.png" alt="FreshBox Delivery"
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="p-5">
+            <h3 class="font-extrabold text-lg mb-3" style="color:#000000;">FreshBox Delivery</h3>
+            <a href="#" class="inline-flex items-center gap-1 text-green-700 font-semibold text-sm hover:underline">
+              ใช้เทมเพลตนี้ <div class="icon-container">
+                <svg class="icon-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M7 17L17 7M17 7H9M17 7V15" />
+                </svg>
+              </div>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+     HIGHLIGHTS  (ครบในที่เดียว)
+════════════════════════════════════════ -->
+  <section class="py-24 px-6 relative overflow-hidden bg-white">
+    <div class="absolute inset-0 pointer-events-none"
+      style="background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(187,247,208,.45) 0%,transparent 65%);"></div>
+    <div class="max-w-6xl mx-auto relative z-10">
+      <!-- heading -->
+      <div class="reveal text-center mb-14">
+        <span class="eyebrow"
+          style="background:rgba(240,253,244,.9);border:1px solid #bbf7d0;color:#16a34a;">ครบในที่เดียว</span>
+        <h2 class="text-4xl md:text-5xl font-extrabold text-gray-950">ครบทุกอย่างที่เว็บต้องการ <span
+            class="text-gradient-vivid">ในที่เดียว</span></h2>
+        <p class="mt-4 text-gray-500 text-lg max-w-xl mx-auto">ตั้งแต่สร้าง แก้ไข จน Publish – BAIBUA จัดการให้ครบ
+          ไม่ต้องใช้เครื่องมืออื่นเพิ่ม</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-5">
+        <!-- Card 1 — คุยภาษาไทย (2 cols) -->
+        <div class="reveal md:col-span-2 rounded-3xl overflow-hidden p-9 flex flex-col sm:flex-row gap-8 card-hover"
+          style="background:linear-gradient(135deg,#f0fdf4 0%,#dcfce7 100%);border:1.5px solid #bbf7d0;min-height:300px;">
+          <div class="flex-1 flex flex-col justify-center">
+            <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 shadow-lg"
+              style="background:#43a047;box-shadow:0 8px 20px rgba(67,160,71,.2);">
+              <!-- languages icon -->
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="m5 8 6 6" />
+                <path d="m4 14 6-6 2-3" />
+                <path d="M2 5h12" />
+                <path d="M7 2h1" />
+                <path d="m22 22-5-10-5 10" />
+                <path d="M14 18h6" />
+              </svg>
+            </div>
+            <h3 class="text-2xl font-extrabold text-gray-950 mb-3">คุยภาษาไทยได้เลย 100%</h3>
+            <p class="text-gray-600 text-sm leading-relaxed">สื่อสารกับน้องใบบัวเป็นภาษาพูดปกติ ไม่ต้องรู้ศัพท์เทคนิคใดๆ
+              AI เข้าใจและสร้างเว็บให้ทันที</p>
+          </div>
+          <!-- chat bubbles -->
+          <div class="flex-shrink-0 w-full sm:w-52 flex flex-col justify-center gap-2.5">
+            <div class="flex justify-end">
+              <div class="text-white text-[11px] leading-snug px-3 py-2.5 rounded-2xl rounded-br-none shadow-sm"
+                style="background:#43a047;">อยากได้เว็บร้านกาแฟ<br>สไตล์มินิมอล สีน้ำตาล</div>
+            </div>
+            <div class="flex justify-start">
+              <div
+                class="bg-white border border-gray-200 text-gray-500 text-[11px] leading-snug px-3 py-2.5 rounded-2xl rounded-bl-none shadow-sm">
+                กำลังสร้างให้เลยค่ะ<br>รอสักครู่... ☕</div>
+            </div>
+            <div class="flex justify-end">
+              <div class="text-[11px] leading-snug px-3 py-2.5 rounded-2xl rounded-br-none shadow-sm"
+                style="background:#dcfce7;border:1px solid #bbf7d0;color:#16a34a;">เว็บพร้อมแล้วค่ะ! ดูได้เลย ✨</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 — จ่ายเมื่อ Publish -->
+        <div class="reveal rounded-3xl overflow-hidden p-8 flex flex-col gap-5 bg-white card-hover"
+          style="border:1.5px solid #e5e7eb;box-shadow:0 4px 24px rgba(0,0,0,.05);">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0"
+              style="background:#eff6ff;border:1px solid #bfdbfe;">
+              <!-- creditcard icon -->
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round">
+                <rect width="22" height="16" x="1" y="4" rx="2" ry="2" />
+                <line x1="1" x2="23" y1="10" y2="10" />
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-lg font-extrabold text-gray-950 mb-1 leading-snug">จ่ายเมื่อ Publish จริง</h3>
+              <p class="text-gray-500 text-xs leading-relaxed">ทดลองสร้างและแก้ไขได้ฟรีไม่จำกัด</p>
+            </div>
+          </div>
+          <div class="space-y-2 mt-auto">
+            <div
+              class="flex items-center justify-between rounded-xl px-3 py-2.5 text-xs bg-gray-50 border border-gray-100 text-gray-500">
+              <div class="flex items-center gap-2">
+                <div class="w-5 h-5 rounded-lg flex items-center justify-center text-[10px] font-bold"
+                  style="background:#dcfce7;color:#16a34a;">✓</div>สร้างเว็บ
+              </div>
+              <span class="text-[10px] font-bold" style="color:#16a34a;">ฟรี</span>
+            </div>
+            <div
+              class="flex items-center justify-between rounded-xl px-3 py-2.5 text-xs bg-gray-50 border border-gray-100 text-gray-500">
+              <div class="flex items-center gap-2">
+                <div class="w-5 h-5 rounded-lg flex items-center justify-center text-[10px] font-bold"
+                  style="background:#dcfce7;color:#16a34a;">✓</div>แก้ไขได้เสมอ
+              </div>
+              <span class="text-[10px] font-bold" style="color:#16a34a;">ฟรี</span>
+            </div>
+            <div class="flex items-center justify-between rounded-xl px-3 py-2.5 text-xs text-white"
+              style="background:#2e7d32;">
+              <div class="flex items-center gap-2">
+                <div class="w-5 h-5 rounded-lg flex items-center justify-center text-[10px] font-bold"
+                  style="background:rgba(255,255,255,.2);">✓</div>Publish จริง
+              </div>
+              <span class="text-[10px] text-white/80 font-semibold">1 Credit</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 — Domain + SSL + Hosting (full width) -->
+        <div class="reveal md:col-span-3 relative rounded-3xl overflow-hidden p-9 card-hover"
+          style="background:linear-gradient(135deg,#f0fdf4 0%,#dbeafe 100%);border:1.5px solid #bbf7d0;">
+          <div class="absolute inset-0 pointer-events-none"
+            style="background:radial-gradient(ellipse 50% 100% at 90% 50%,rgba(255,255,255,.6) 0%,transparent 60%);">
+          </div>
+          <div class="absolute inset-0 pointer-events-none"
+            style="opacity:.06;background-image:radial-gradient(circle,#16a34a 1px,transparent 1px);background-size:24px 24px;">
+          </div>
+          <div class="relative z-10 flex flex-col md:flex-row md:items-center gap-10">
+            <div class="flex-1">
+              <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-6"
+                style="background:#dcfce7;border:1px solid #bbf7d0;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="2" y1="12" x2="22" y2="12" />
+                  <path
+                    d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                </svg>
+              </div>
+              <h3 class="text-2xl font-extrabold text-gray-950 mb-3">Domain + SSL + Hosting ครบ</h3>
+              <p class="text-gray-600 text-sm leading-relaxed max-w-md">เชื่อมโดเมนได้เอง รับ SSL ฟรีอัตโนมัติ Hosting
+                พร้อมใช้ด้วยคลิกเดียว ทุกอย่างในที่เดียว</p>
+            </div>
+            <div class="flex-shrink-0 w-full md:w-64 space-y-3">
+              <div class="flex items-center justify-between rounded-xl px-4 py-3"
+                style="background:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.9);box-shadow:0 1px 8px rgba(0,0,0,.04);">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-2 h-2 rounded-full flex-shrink-0" style="background:#16a34a;"></div><span
+                    class="text-sm text-gray-700 font-medium">yoursite.com</span>
+                </div>
+                <span class="text-xs font-bold px-2.5 py-1 rounded-lg"
+                  style="background:rgba(22,163,74,.1);color:#16a34a;">เชื่อมแล้ว</span>
+              </div>
+              <div class="flex items-center justify-between rounded-xl px-4 py-3"
+                style="background:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.9);box-shadow:0 1px 8px rgba(0,0,0,.04);">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-2 h-2 rounded-full flex-shrink-0" style="background:#2563eb;"></div><span
+                    class="text-sm text-gray-700 font-medium">SSL Certificate</span>
+                </div>
+                <span class="text-xs font-bold px-2.5 py-1 rounded-lg"
+                  style="background:rgba(37,99,235,.1);color:#2563eb;">ฟรี</span>
+              </div>
+              <div class="flex items-center justify-between rounded-xl px-4 py-3"
+                style="background:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.9);box-shadow:0 1px 8px rgba(0,0,0,.04);">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-2 h-2 rounded-full flex-shrink-0 animate-pulse" style="background:#16a34a;"></div><span
+                    class="text-sm text-gray-700 font-medium">Hosting</span>
+                </div>
+                <span class="text-xs font-bold px-2.5 py-1 rounded-lg"
+                  style="background:rgba(22,163,74,.1);color:#16a34a;">● Live</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+     FEATURES  (ทำไมต้อง BAIBUA)
+════════════════════════════════════════ -->
+  <section id="features" class="py-24 px-6 relative overflow-hidden" style="background:#fafafa;">
+    <div class="absolute top-0 right-0 w-[600px] h-[600px] rounded-full pointer-events-none animate-blob-slow"
+      style="background:radial-gradient(circle,rgba(187,247,208,.9) 0%,transparent 65%);transform:translate(20%,-30%);opacity:.25;">
+    </div>
+    <div class="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full pointer-events-none animate-blob delay-4000"
+      style="background:radial-gradient(circle,rgba(255,172,190,.8) 0%,transparent 65%);transform:translate(-25%,30%);opacity:.20;">
+    </div>
+
+    <div class="max-w-6xl mx-auto relative z-10">
+      <div class="reveal text-center mb-14">
+        <span class="eyebrow"
+          style="background:rgba(255,240,246,.9);border:1px solid rgba(233,30,99,.22);color:#ad1457;">ทำไมต้อง
+          BAIBUA</span>
+        <h2 class="text-4xl md:text-5xl font-extrabold text-gray-950">ทำไมต้องเลือกทำเว็บกับ <span
+            class="text-gradient-vivid">น้องใบบัว?</span></h2>
+        <p class="mt-4 text-gray-500 text-lg max-w-xl mx-auto">ไม่ใช่แค่สร้างเว็บได้ – แต่ตอบโจทย์ธุรกิจจริงๆ
+          ด้วยเหตุผลเหล่านี้</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-5">
+        <!-- 01 — hero card (2 cols) -->
+        <div class="reveal md:col-span-2 relative rounded-3xl p-8 flex flex-col justify-between card-hover"
+          style="background:linear-gradient(135deg,#dcfce7 0%,#fff 60%);border:1.5px solid #bbf7d0;min-height:260px;">
+          <div class="absolute top-5 right-7 text-[90px] font-extrabold leading-none select-none pointer-events-none"
+            style="opacity:.07;color:#111827;">01</div>
+          <div>
+            <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 shadow-sm"
+              style="background:#dcfce7;border:1.5px solid #bbf7d0;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-extrabold text-gray-950 mb-2">ไม่ต้องรอ ไม่ต้องจ้างทีมเว็บ</h3>
+            <p class="text-gray-500 text-sm leading-relaxed mb-4 max-w-sm">แก้คำผิด เปลี่ยนภาพ อัพเดทราคา –
+              ทำเองได้ทันที ตลอด 24 ชั่วโมง ไม่ต้องส่งอีเมลรอวันหรืออาทิตย์</p>
+          </div>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="px-3 py-1 rounded-xl text-xs font-semibold" style="background:#dcfce7;color:#16a34a;">อิสระ
+              100%</span>
+            <span class="px-3 py-1 rounded-xl text-xs font-semibold"
+              style="background:#dcfce7;color:#16a34a;">แก้เองได้ทันที</span>
+            <span class="px-3 py-1 rounded-xl text-xs font-semibold"
+              style="background:#dcfce7;color:#16a34a;">ไม่รอใคร</span>
+          </div>
+        </div>
+
+        <!-- 02 -->
+        <div class="reveal relative rounded-3xl p-8 bg-white flex flex-col justify-between card-hover"
+          style="border:1.5px solid #f0f0f0;box-shadow:0 2px 20px rgba(0,0,0,.04);min-height:260px;">
+          <div class="absolute top-5 right-7 text-[90px] font-extrabold leading-none select-none pointer-events-none"
+            style="opacity:.04;color:#111827;">02</div>
+          <div class="absolute bottom-7 right-7 font-extrabold leading-none pointer-events-none"
+            style="font-size:3rem;color:#fce7f3;">1<span style="font-size:1.5rem;">วัน</span></div>
+          <div class="relative z-10">
+            <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5"
+              style="background:#fce7f3;border:1.5px solid #fbcfe8;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#db2777" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-extrabold text-gray-950 mb-2">เปิดเว็บจริงได้ภายใน 1 วัน</h3>
+            <p class="text-gray-500 text-sm leading-relaxed mb-4">จากไม่มีเว็บเลย ถึงเว็บใช้จริงบนอินเทอร์เน็ต
+              ใช้เวลาไม่เกินวันเดียว</p>
+          </div>
+          <div class="flex flex-wrap gap-1.5 relative z-10">
+            <span class="px-3 py-1 rounded-xl text-xs font-semibold"
+              style="background:#fce7f3;color:#db2777;">รวดเร็ว</span>
+            <span class="px-3 py-1 rounded-xl text-xs font-semibold"
+              style="background:#fce7f3;color:#db2777;">วันเดียวได้เว็บ</span>
+          </div>
+        </div>
+
+        <!-- 03 04 05 — 3 equal cards -->
+        <div class="reveal relative rounded-3xl overflow-hidden p-8 bg-white flex flex-col justify-between card-hover"
+          style="border:1.5px solid #f0f0f0;box-shadow:0 2px 20px rgba(0,0,0,.04);">
+          <div class="absolute top-5 right-7 text-[80px] font-extrabold leading-none select-none pointer-events-none"
+            style="opacity:.04;color:#111827;">03</div>
+          <div class="relative z-10">
+            <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5"
+              style="background:#f3e8ff;border:1.5px solid #e9d5ff;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="1" x2="12" y2="23" />
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+              </svg>
+            </div>
+            <h3 class="text-lg font-extrabold text-gray-950 mb-2">ประหยัดกว่าจ้างเอเจนซีมาก</h3>
+            <p class="text-gray-500 text-sm leading-relaxed mb-4">เว็บจากเอเจนซีราคาหลายหมื่น BAIBUA ราคาหลักร้อยต่อเว็บ
+              ได้คุณภาพ Professional เหมือนกัน</p>
+          </div>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="px-2.5 py-1 rounded-xl text-xs font-medium bg-gray-100 text-gray-600">ประหยัด</span>
+            <span class="px-2.5 py-1 rounded-xl text-xs font-medium bg-gray-100 text-gray-600">คุ้มกว่า 10×</span>
+          </div>
+        </div>
+
+        <div class="reveal relative rounded-3xl overflow-hidden p-8 bg-white flex flex-col justify-between card-hover"
+          style="border:1.5px solid #f0f0f0;box-shadow:0 2px 20px rgba(0,0,0,.04);">
+          <div class="absolute top-5 right-7 text-[80px] font-extrabold leading-none select-none pointer-events-none"
+            style="opacity:.04;color:#111827;">04</div>
+          <div class="relative z-10">
+            <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5"
+              style="background:#dbeafe;border:1.5px solid #bfdbfe;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15 4V2" />
+                <path d="M15 16v-2" />
+                <path d="M8 9h2" />
+                <path d="M20 9h2" />
+                <path d="M17.8 11.8 19 13" />
+                <path d="M15 9h0" />
+                <path d="M17.8 6.2 19 5" />
+                <path d="m3 21 9-9" />
+                <path d="M12.2 6.2 11 5" />
+              </svg>
+            </div>
+            <h3 class="text-lg font-extrabold text-gray-950 mb-2">AI จำสไตล์แบรนด์คุณได้</h3>
+            <p class="text-gray-500 text-sm leading-relaxed mb-4">บอกครั้งเดียว – สีแบรนด์ โทนภาพ สไตล์การเขียน
+              น้องใบบัวจำแล้วนำไปใช้ทุกครั้งโดยอัตโนมัติ</p>
+          </div>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="px-2.5 py-1 rounded-xl text-xs font-medium bg-gray-100 text-gray-600">จำสไตล์แบรนด์</span>
+            <span class="px-2.5 py-1 rounded-xl text-xs font-medium bg-gray-100 text-gray-600">ไม่ต้องบอกซ้ำ</span>
+          </div>
+        </div>
+
+        <div class="reveal relative rounded-3xl overflow-hidden p-8 bg-white flex flex-col justify-between card-hover"
+          style="border:1.5px solid #f0f0f0;box-shadow:0 2px 20px rgba(0,0,0,.04);">
+          <div class="absolute top-5 right-7 text-[80px] font-extrabold leading-none select-none pointer-events-none"
+            style="opacity:.04;color:#111827;">05</div>
+          <div class="relative z-10">
+            <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5"
+              style="background:#ffedd5;border:1.5px solid #fed7aa;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c2410c" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 18v-6a9 9 0 0 1 18 0v6" />
+                <path
+                  d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" />
+              </svg>
+            </div>
+            <h3 class="text-lg font-extrabold text-gray-950 mb-2">Support ทีมไทย ตอบเร็ว</h3>
+            <p class="text-gray-500 text-sm leading-relaxed mb-4">ไม่ใช่ Bot ไม่ใช่ FAQ ทีมคนจริงตอบผ่าน LINE ภาษาไทย
+              เข้าใจปัญหาธุรกิจไทย</p>
+          </div>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="px-2.5 py-1 rounded-xl text-xs font-medium bg-gray-100 text-gray-600">LINE Support</span>
+            <span class="px-2.5 py-1 rounded-xl text-xs font-medium bg-gray-100 text-gray-600">ทีมไทย</span>
+          </div>
+        </div>
+
+        <!-- 06 — full width closing card -->
+        <div class="reveal md:col-span-3 relative rounded-3xl overflow-hidden p-9 card-hover"
+          style="background:linear-gradient(135deg,#fce4ec 0%,#f0fdf4 50%,#dbeafe 100%);border:1.5px solid #f8bbd0;">
+          <div class="absolute inset-0 pointer-events-none"
+            style="background:radial-gradient(ellipse 40% 100% at 85% 50%,rgba(255,255,255,.6) 0%,transparent 60%);">
+          </div>
+          <div class="absolute inset-0 pointer-events-none"
+            style="opacity:.07;background-image:radial-gradient(circle,#e91e63 1px,transparent 1px);background-size:24px 24px;">
+          </div>
+          <div class="relative z-10 flex flex-col md:flex-row md:items-center gap-10">
+            <div class="flex-1">
+              <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5"
+                style="background:#ccfbf1;border:1.5px solid #99f6e4;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0f766e" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="16 18 22 12 16 6" />
+                  <polyline points="8 6 2 12 8 18" />
+                </svg>
+              </div>
+              <h3 class="text-2xl font-extrabold text-gray-950 mb-3">ไม่ต้องรู้โค้ดเลยสักบรรทัด</h3>
+              <p class="text-gray-600 text-sm leading-relaxed max-w-xl">แค่บอกว่าอยากได้อะไร –
+                น้องใบบัวจัดการโค้ดทั้งหมดให้เอง คุณแค่บอกไอเดีย เดียวได้เว็บเลยค่ะ</p>
+            </div>
+            <div class="flex flex-wrap gap-2 md:flex-col md:items-end flex-shrink-0">
+              <span class="px-4 py-2 rounded-xl text-sm font-semibold"
+                style="background:rgba(233,30,99,.08);color:#c2185b;border:1px solid rgba(233,30,99,.18);">ไม่ต้องเขียนโค้ด</span>
+              <span class="px-4 py-2 rounded-xl text-sm font-semibold"
+                style="background:rgba(67,160,71,.08);color:#2e7d32;border:1px solid rgba(67,160,71,.2);">บอกแล้วได้เลย</span>
+              <span class="px-4 py-2 rounded-xl text-sm font-semibold"
+                style="background:rgba(233,30,99,.08);color:#c2185b;border:1px solid rgba(233,30,99,.18);">ใครก็ทำได้</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+     USAGE MODES
+════════════════════════════════════════ -->
+  <section id="usage-modes" class="py-24 px-6 relative overflow-hidden" style="background:#f8fafc;">
+    <div class="absolute inset-0 pointer-events-none"
+      style="background:radial-gradient(ellipse 55% 45% at 0% 50%,rgba(255,172,190,.2) 0%,transparent 65%);"></div>
+    <div class="absolute inset-0 pointer-events-none"
+      style="background:radial-gradient(ellipse 55% 45% at 100% 50%,rgba(187,247,208,.25) 0%,transparent 65%);"></div>
+    <div class="max-w-6xl mx-auto relative z-10">
+      <div class="reveal text-center mb-14">
+        <span class="eyebrow"
+          style="background:rgba(240,253,244,.9);border:1px solid #bbf7d0;color:#16a34a;">เริ่มยังไงก็ได้ตามถนัด</span>
+        <h2 class="text-4xl md:text-5xl font-extrabold text-gray-950">2 รูปแบบ <span
+            class="text-gradient-vivid">การใช้งาน</span></h2>
+        <p class="mt-4 text-gray-500 text-lg max-w-xl mx-auto">เริ่มจากศูนย์ก็ได้ หรือนำเว็บที่มีอยู่แล้วเข้ามาก็ได้ –
+          สุดท้ายได้เว็บออนไลน์เหมือนกัน</p>
+      </div>
+      <div class="relative grid md:grid-cols-2 gap-6">
+        <!-- OR divider -->
+        <div
+          class="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex-col items-center gap-2 pointer-events-none">
+          <div class="h-16 w-px" style="background:linear-gradient(to bottom,transparent,#e5e7eb,transparent);"></div>
+          <div
+            class="px-3 py-1.5 rounded-full bg-white border border-gray-200 text-xs font-bold text-gray-400 shadow-sm">
+            หรือ</div>
+          <div class="h-16 w-px" style="background:linear-gradient(to bottom,transparent,#e5e7eb,transparent);"></div>
+        </div>
+
+        <!-- Mode 1 — เริ่มจากศูนย์ -->
+        <div class="reveal rounded-3xl bg-white card-hover"
+          style="border:1.5px solid #bbf7d0;box-shadow:0 4px 32px rgba(0,0,0,.06);overflow:hidden;">
+          <div class="relative p-7 pb-6" style="background:linear-gradient(135deg,#f0fdf4 0%,#dcfce7 100%);">
+            <div class="absolute top-2 right-5 font-extrabold leading-none select-none pointer-events-none"
+              style="font-size:110px;color:rgba(22,163,74,.07);">01</div>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold mb-5"
+              style="background:#dcfce7;color:#16a34a;border:1px solid #bbf7d0;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              </svg>
+              เริ่มจากศูนย์
+            </span>
+            <div class="flex items-center gap-2">
+              <div class="flex flex-col items-center gap-1.5">
+                <div class="w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm"
+                  style="background:#fff;border:1.5px solid #bbf7d0;"><svg width="18" height="18" viewBox="0 0 24 24"
+                    fill="none" stroke="#16a34a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                  </svg></div>
+                <span class="text-[10px] font-semibold" style="color:#16a34a;">เล่าให้ฟัง</span>
+              </div>
+              <svg width="20" height="12" viewBox="0 0 20 12" fill="none">
+                <path d="M1 6h16M13 1l5 5-5 5" stroke="#16a34a" stroke-width="1.8" stroke-linecap="round"
+                  stroke-linejoin="round" opacity=".5" />
+              </svg>
+              <div class="flex flex-col items-center gap-1.5">
+                <div class="w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm"
+                  style="background:#fff;border:1.5px solid #bbf7d0;"><svg width="18" height="18" viewBox="0 0 24 24"
+                    fill="none" stroke="#16a34a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+                    <line x1="8" y1="21" x2="16" y2="21" />
+                    <line x1="12" y1="17" x2="12" y2="21" />
+                  </svg></div>
+                <span class="text-[10px] font-semibold" style="color:#16a34a;">AI สร้าง</span>
+              </div>
+              <svg width="20" height="12" viewBox="0 0 20 12" fill="none">
+                <path d="M1 6h16M13 1l5 5-5 5" stroke="#16a34a" stroke-width="1.8" stroke-linecap="round"
+                  stroke-linejoin="round" opacity=".5" />
+              </svg>
+              <div class="flex flex-col items-center gap-1.5">
+                <div class="w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm"
+                  style="background:#fff;border:1.5px solid #bbf7d0;"><svg width="18" height="18" viewBox="0 0 24 24"
+                    fill="none" stroke="#16a34a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path
+                      d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
+                    <path
+                      d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
+                    <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" />
+                    <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
+                  </svg></div>
+                <span class="text-[10px] font-semibold" style="color:#16a34a;">Publish</span>
+              </div>
+            </div>
+          </div>
+          <div class="p-7 pt-6">
+            <h3 class="text-xl font-extrabold text-gray-950 mb-3 leading-snug">เล่าให้น้องใบบัวฟัง แล้วได้เว็บใหม่</h3>
+            <p class="text-gray-500 text-sm leading-relaxed">ไม่มีโค้ดอยู่เลย? เริ่มจาก 0 ได้เลย – แค่บอกว่าทำธุรกิจอะไร
+              ขายอะไร น้องใบบัวจะปั้นเว็บให้คุณเห็นต่อหน้าภายในไม่กี่นาที</p>
+            <a href="#"
+              class="mt-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all hover:scale-105"
+              style="background:#dcfce7;color:#16a34a;">เริ่มเลย →</a>
+          </div>
+        </div>
+
+        <!-- Mode 2 — มีเว็บอยู่แล้ว -->
+        <div class="reveal rounded-3xl bg-white card-hover relative"
+          style="border:1.5px solid #fbcfe8;box-shadow:0 4px 32px rgba(0,0,0,.06);overflow:visible;">
+          <div class="relative p-7 pb-6 rounded-t-3xl overflow-hidden"
+            style="background:linear-gradient(135deg,#fdf2f8 0%,#fce7f3 100%);">
+            <div class="absolute top-2 right-5 font-extrabold leading-none select-none pointer-events-none"
+              style="font-size:110px;color:rgba(219,39,119,.07);">02</div>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold mb-5"
+              style="background:#fce7f3;color:#db2777;border:1px solid #fbcfe8;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+              </svg>
+              มีเว็บอยู่แล้ว
+            </span>
+            <div class="flex items-center gap-2">
+              <div class="flex flex-col items-center gap-1.5">
+                <div class="w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm"
+                  style="background:#fff;border:1.5px solid #fbcfe8;"><svg width="18" height="18" viewBox="0 0 24 24"
+                    fill="none" stroke="#db2777" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+                  </svg></div>
+                <span class="text-[10px] font-semibold" style="color:#db2777;">Browse File</span>
+              </div>
+              <svg width="20" height="12" viewBox="0 0 20 12" fill="none">
+                <path d="M1 6h16M13 1l5 5-5 5" stroke="#db2777" stroke-width="1.8" stroke-linecap="round"
+                  stroke-linejoin="round" opacity=".5" />
+              </svg>
+              <div class="flex flex-col items-center gap-1.5">
+                <div class="w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm"
+                  style="background:#fff;border:1.5px solid #fbcfe8;"><svg width="18" height="18" viewBox="0 0 24 24"
+                    fill="none" stroke="#db2777" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="6" y1="3" x2="6" y2="15" />
+                    <circle cx="18" cy="6" r="3" />
+                    <circle cx="6" cy="18" r="3" />
+                    <path d="M18 9a9 9 0 0 1-9 9" />
+                  </svg></div>
+                <span class="text-[10px] font-semibold" style="color:#db2777;">Clone Git</span>
+              </div>
+              <svg width="20" height="12" viewBox="0 0 20 12" fill="none">
+                <path d="M1 6h16M13 1l5 5-5 5" stroke="#db2777" stroke-width="1.8" stroke-linecap="round"
+                  stroke-linejoin="round" opacity=".5" />
+              </svg>
+              <div class="flex flex-col items-center gap-1.5">
+                <div class="w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm"
+                  style="background:#fff;border:1.5px solid #fbcfe8;"><svg width="18" height="18" viewBox="0 0 24 24"
+                    fill="none" stroke="#db2777" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="16 16 12 12 8 16" />
+                    <line x1="12" y1="12" x2="12" y2="21" />
+                    <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" />
+                  </svg></div>
+                <span class="text-[10px] font-semibold" style="color:#db2777;">Deploy</span>
+              </div>
+            </div>
+          </div>
+          <div class="p-7 pt-6">
+            <h3 class="text-xl font-extrabold text-gray-950 mb-3 leading-snug">มีเว็บอยู่แล้ว นำเข้ามา Deploy ได้เลย
+            </h3>
+            <p class="text-gray-500 text-sm leading-relaxed">มีโค้ดเว็บอยู่แล้วจากที่อื่น? อัปโหลดไฟล์ .zip / .tar
+              หรือใส่ URL Git repo – เรา deploy ให้ทันที</p>
+            <a href="#"
+              class="mt-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all hover:scale-105"
+              style="background:#fce7f3;color:#db2777;">เริ่มเลย →</a>
+          </div>
+          <!-- mascot-3 -->
+          <div class="absolute -bottom-14 -right-4 pointer-events-none select-none hidden md:block z-20 animate-float"
+            style="animation-delay:.6s;">
+            <img src="./public/mascot-3.png" alt="น้องใบบัว" width="130" height="130" style="object-fit:contain;">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+     HOW IT WORKS
+════════════════════════════════════════ -->
+  <section id="how-it-works" class="py-24 px-6 relative bg-white">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute top-0 right-0 w-[500px] h-[500px] rounded-full animate-blob"
+        style="background:radial-gradient(circle,rgba(255,172,190,.8) 0%,transparent 65%);transform:translate(25%,-25%);opacity:.15;">
+      </div>
+      <div class="absolute bottom-0 left-0 w-[450px] h-[450px] rounded-full animate-blob delay-4000"
+        style="background:radial-gradient(circle,rgba(187,247,208,.9) 0%,transparent 65%);transform:translate(-25%,25%);opacity:.10;">
+      </div>
+    </div>
+    <div class="max-w-6xl mx-auto">
+      <div class="reveal text-center mb-14">
+        <span class="eyebrow"
+          style="background:rgba(255,240,246,.9);border:1px solid rgba(233,30,99,.22);color:#ad1457;">วิธีใช้งาน</span>
+        <h2 class="text-4xl md:text-5xl font-extrabold text-gray-950">สร้างเว็บใน <span class="text-gradient-vivid">4
+            ขั้นตอน</span></h2>
+        <p class="mt-4 text-gray-500 text-lg max-w-xl mx-auto">เลื่อนลงเพื่อดูแต่ละขั้นตอน – ง่ายกว่าที่คิด
+          เร็วกว่าที่คาด</p>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-16">
+        <!-- Left: step cards -->
+        <div>
+          <!-- Step 1 -->
+          <div class="step-trigger min-h-[45vh] flex items-center py-4" data-step="0">
+            <div class="step-card w-full rounded-2xl px-6 py-5 flex items-start gap-4 active" onclick="setStep(0)">
+              <div class="step-icon w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-all"
+                style="background:#43a047;box-shadow:0 4px 14px rgba(67,160,71,.35);">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                  <line x1="16" y1="13" x2="8" y2="13" />
+                  <line x1="16" y1="17" x2="8" y2="17" />
+                  <polyline points="10 9 9 9 8 9" />
+                </svg>
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="text-xs font-bold tracking-widest uppercase text-gray-400 mb-0.5">01</div>
+                <div class="font-bold text-base text-gray-950">กรอกบรีฟ</div>
+                <div class="step-body">
+                  <p class="text-sm text-gray-500 mt-1.5 leading-relaxed">ใส่ชื่อเว็บ ธุรกิจ สินค้า/บริการ
+                    และเลือกสไตล์ที่ชอบ ไม่ต้องรู้โค้ด พิมพ์ภาษาไทยธรรมดา</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Step 2 -->
+          <div class="step-trigger min-h-[45vh] flex items-center py-4" data-step="1">
+            <div class="step-card w-full rounded-2xl px-6 py-5 flex items-start gap-4" onclick="setStep(1)">
+              <div class="step-icon w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-all"
+                style="background:#f3f4f6;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+                  <line x1="8" y1="21" x2="16" y2="21" />
+                  <line x1="12" y1="17" x2="12" y2="21" />
+                </svg>
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="text-xs font-bold tracking-widest uppercase text-gray-300 mb-0.5">02</div>
+                <div class="font-bold text-base text-gray-500">น้องใบบัวสร้างเว็บให้</div>
+                <div class="step-body">
+                  <p class="text-sm text-gray-500 mt-1.5 leading-relaxed">รอประมาณ 5-7 นาที AI
+                    จะออกแบบและเขียนเว็บให้ครบ ปิดแท็บได้ ระบบสร้างต่อเนื่องในพื้นหลัง</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Step 3 -->
+          <div class="step-trigger min-h-[45vh] flex items-center py-4" data-step="2">
+            <div class="step-card w-full rounded-2xl px-6 py-5 flex items-start gap-4" onclick="setStep(2)">
+              <div class="step-icon w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-all"
+                style="background:#f3f4f6;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 20h9" />
+                  <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                </svg>
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="text-xs font-bold tracking-widest uppercase text-gray-300 mb-0.5">03</div>
+                <div class="font-bold text-base text-gray-500">ปรับแก้ตามต้องการ</div>
+                <div class="step-body">
+                  <p class="text-sm text-gray-500 mt-1.5 leading-relaxed">เว็บพร้อมแล้ว สั่ง AI แก้ข้อความ รูป สี
+                    หรือเพิ่มส่วนใหม่ได้เลย พิมพ์ภาษาไทยธรรมดา</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Step 4 -->
+          <div class="step-trigger min-h-[45vh] flex items-center py-4" data-step="3">
+            <div class="step-card w-full rounded-2xl px-6 py-5 flex items-start gap-4" onclick="setStep(3)">
+              <div class="step-icon w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-all"
+                style="background:#f3f4f6;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="2" y1="12" x2="22" y2="12" />
+                  <path
+                    d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                </svg>
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="text-xs font-bold tracking-widest uppercase text-gray-300 mb-0.5">04</div>
+                <div class="font-bold text-base text-gray-500">Publish เว็บจริง</div>
+                <div class="step-body">
+                  <p class="text-sm text-gray-500 mt-1.5 leading-relaxed">กด Publish เว็บออนไลน์ทันที มี URL จริง SSL
+                    ฟรี แก้ไขต่อได้ตลอด ไม่ต้องรอ</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: sticky preview -->
+        <div class="hidden lg:block">
+          <div style="position:sticky;top:calc(50vh - 220px);">
+            <!-- Preview 0: Brief form -->
+            <div class="step-preview active" id="preview-0">
+              <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                <div class="px-6 pt-6 pb-4 border-b border-gray-100">
+                  <div class="text-lg font-extrabold text-gray-900">เริ่มเว็บใหม่</div>
+                  <div class="text-sm text-gray-400 mt-1">บอกน้องใบบัวว่าต้องการเว็บแบบไหน</div>
+                </div>
+                <div class="p-6 space-y-4">
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <div class="text-xs text-gray-500 mb-1.5 font-medium">ชื่อเว็บ *</div>
+                      <div class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-500">Vivid
+                        Creative Studio</div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-gray-500 mb-1.5 font-medium">ชื่อโดเมน *</div>
+                      <div class="rounded-xl border px-4 py-2.5 text-sm"
+                        style="border-color:#43a047;background:#f0fdf4;color:#2e7d32;">vivid-creative-studio</div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="text-xs text-gray-500 mb-1.5 font-medium">ธุรกิจของคุณคืออะไร *</div>
+                    <div class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-600">
+                      สตูดิโอรับถ่ายภาพ วิดีโอ และงานโปรดักชั่นโฆษณา</div>
+                  </div>
+                  <div>
+                    <div class="text-xs text-gray-500 mb-2 font-medium">เลือกสไตล์</div>
+                    <div class="grid grid-cols-3 gap-3">
+                      <div class="rounded-xl border border-gray-200 p-3 text-center">
+                        <div class="flex justify-center gap-1.5 mb-2">
+                          <div class="w-4 h-4 rounded-full" style="background:#1a1a2e;"></div>
+                          <div class="w-4 h-4 rounded-full" style="background:#6366f1;"></div>
+                        </div>
+                        <div class="text-xs text-gray-600">โมเดิร์น มินิมอล</div>
+                      </div>
+                      <div class="rounded-xl border p-3 text-center" style="border-color:#43a047;background:#f0fdf4;">
+                        <div class="flex justify-center gap-1.5 mb-2">
+                          <div class="w-4 h-4 rounded-full" style="background:#f472b6;"></div>
+                          <div class="w-4 h-4 rounded-full" style="background:#a3e635;"></div>
+                        </div>
+                        <div class="text-xs" style="color:#2e7d32;">สดใส น่ารัก</div>
+                      </div>
+                      <div class="rounded-xl border border-gray-200 p-3 text-center">
+                        <div class="flex justify-center gap-1.5 mb-2">
+                          <div class="w-4 h-4 rounded-full" style="background:#1a1a1a;"></div>
+                          <div class="w-4 h-4 rounded-full" style="background:#c9a96e;"></div>
+                        </div>
+                        <div class="text-xs text-gray-600">หรูหรา พรีเมียม</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="px-6 pb-6">
+                  <div
+                    class="w-full py-3 rounded-xl text-white text-sm font-bold text-center flex items-center justify-center gap-2"
+                    style="background:#2e7d32;">เริ่มให้น้องใบบัวสร้าง <svg width="14" height="14" viewBox="0 0 24 24"
+                      fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                      <polyline points="12 5 19 12 12 19" />
+                    </svg></div>
+                </div>
+              </div>
+            </div>
+            <!-- Preview 1: Progress -->
+            <div class="step-preview" id="preview-1">
+              <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden p-7 text-center">
+                <div class="inline-flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-full mb-5"
+                  style="background:#f0fdf4;color:#2e7d32;">
+                  <span class="w-2 h-2 rounded-full animate-pulse" style="background:#43a047;"></span>
+                  กำลังสร้างเว็บให้คุณ...
+                </div>
+                <div class="text-xl font-extrabold text-gray-900 mb-1.5">น้องใบบัวกำลังสร้างเว็บให้คุณ</div>
+                <div class="text-sm text-gray-400 mb-6">ใช้เวลาประมาณ 5–7 นาที</div>
+                <div class="flex items-center justify-center gap-3 mb-6">
+                  <div class="flex flex-col items-center gap-1.5">
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold border-2"
+                      style="background:#2e7d32;border-color:#2e7d32;color:#fff;">✓</div>
+                    <div class="text-xs text-gray-700 font-semibold">บรีฟ</div>
+                  </div>
+                  <div class="w-8 h-px" style="background:#43a047;"></div>
+                  <div class="flex flex-col items-center gap-1.5">
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold border-2"
+                      style="background:#fff;border-color:#43a047;color:#2e7d32;box-shadow:0 0 0 4px rgba(67,160,71,.1);">
+                      2</div>
+                    <div class="text-xs text-gray-700 font-semibold">วางแผน</div>
+                  </div>
+                  <div class="w-8 h-px bg-gray-200"></div>
+                  <div class="flex flex-col items-center gap-1.5">
+                    <div
+                      class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold border-2 bg-gray-100 border-gray-200 text-gray-400">
+                      3</div>
+                    <div class="text-xs text-gray-400">เขียนเว็บ</div>
+                  </div>
+                  <div class="w-8 h-px bg-gray-200"></div>
+                  <div class="flex flex-col items-center gap-1.5">
+                    <div
+                      class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold border-2 bg-gray-100 border-gray-200 text-gray-400">
+                      4</div>
+                    <div class="text-xs text-gray-400">เปิดเว็บ</div>
+                  </div>
+                </div>
+                <div class="bg-gray-50 rounded-xl p-4 text-left border border-gray-100">
+                  <div class="flex justify-between text-sm text-gray-500 mb-2"><span>ความคืบหน้า</span><span
+                      class="font-bold" style="color:#2e7d32;" id="step2-pct">0%</span></div>
+                  <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div id="step2-bar" class="h-full rounded-full"
+                      style="width:0%;background:linear-gradient(to right,#43a047,#66bb6a);transition:width 33ms linear;">
+                    </div>
+                  </div>
+                  <div class="text-sm text-gray-400 mt-2.5 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full animate-pulse flex-shrink-0"
+                      style="background:#43a047;"></span>
+                    <span id="step2-msg">กำลังวางโครงสร้างเว็บ...</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Preview 2: Editor + Chat -->
+            <div class="step-preview" id="preview-2">
+              <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden text-xs">
+                <div class="flex items-center justify-between px-4 py-2.5 border-b border-gray-100 bg-gray-50">
+                  <div class="flex items-center gap-2"><span
+                      class="font-bold text-gray-800 text-sm">my-website</span><span
+                      class="px-2 py-0.5 rounded bg-yellow-100 text-yellow-700 font-semibold text-xs">draft</span></div>
+                  <div class="flex items-center gap-2">
+                    <div class="px-2.5 py-1 rounded-lg bg-white border border-gray-200 text-gray-500">Basic</div>
+                    <div class="px-3 py-1 rounded-lg text-white font-bold" style="background:#2e7d32;">Publish</div>
+                  </div>
+                </div>
+                <div class="flex" style="height:280px;">
+                  <div class="border-r border-gray-100 overflow-hidden" style="width:58%;">
+                    <img src="./public/examples/vivid-creative-studio.png" alt="preview"
+                      class="w-full h-full object-cover object-top">
+                  </div>
+                  <div class="flex-1 flex flex-col bg-white">
+                    <div
+                      class="px-3 py-2.5 border-b border-gray-100 font-bold text-gray-700 text-xs flex items-center gap-1.5">
+                      <span class="w-2 h-2 rounded-full animate-pulse"
+                        style="background:#22c55e;"></span>คุยกับน้องใบบัว
+                    </div>
+                    <div class="flex-1 overflow-hidden px-3 py-3 space-y-2.5">
+                      <div class="rounded-xl p-2.5 text-xs text-gray-600 leading-snug" style="background:#f0fdf4;">
+                        สวัสดี! บอกได้เลยอยากแก้อะไร</div>
+                      <div class="bg-gray-100 rounded-xl p-2.5 text-xs text-gray-700 leading-snug ml-2">
+                        เปลี่ยนสีหัวข้อเป็นสีเขียวค่ะ</div>
+                      <div class="rounded-xl p-2.5 text-xs text-gray-600 leading-snug" style="background:#f0fdf4;">
+                        ได้เลย! กำลังปรับให้...</div>
+                    </div>
+                    <div class="px-3 pb-3">
+                      <div class="flex items-center gap-1.5 rounded-xl border border-gray-200 px-3 py-2 bg-gray-50">
+                        <span class="flex-1 text-xs text-gray-400">อยากแก้อะไร...</span>
+                        <div class="w-6 h-6 rounded-lg flex items-center justify-center text-white"
+                          style="background:#2e7d32;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5">
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                            <polyline points="12 5 19 12 12 19" />
+                          </svg></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Preview 3: Published browser -->
+            <div class="step-preview" id="preview-3">
+              <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                <div class="flex items-center gap-2 px-3 py-2.5 bg-gray-100 border-b border-gray-200">
+                  <div class="flex gap-1.5 flex-shrink-0">
+                    <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-400"></div>
+                  </div>
+                  <div
+                    class="flex-1 bg-white rounded-lg px-3 py-1.5 text-xs text-gray-400 border border-gray-200 truncate font-mono">
+                    vivid-creative-studio.hostinglotus.cloud</div>
+                  <span class="flex items-center gap-1 text-[11px] font-bold flex-shrink-0" style="color:#16a34a;"><span
+                      class="w-1.5 h-1.5 rounded-full animate-pulse" style="background:#22c55e;"></span>Live</span>
+                </div>
+                <div class="relative overflow-hidden" style="aspect-ratio:16/9;">
+                  <img src="./public/examples/vivid-creative-studio.png" alt="published"
+                    class="w-full h-full object-cover object-top">
+                  <div
+                    class="absolute top-3 right-3 flex items-center gap-1.5 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg"
+                    style="background:#22c55e;">
+                    <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>Publish แล้ว!
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step indicator dots -->
+            <div class="flex items-center gap-2 mt-5 justify-center" id="step-dots">
+              <button onclick="setStep(0)" class="step-dot h-2 rounded-full transition-all"
+                style="width:24px;background:#43a047;" data-dot="0"></button>
+              <button onclick="setStep(1)" class="step-dot h-2 rounded-full transition-all"
+                style="width:8px;background:#d1d5db;" data-dot="1"></button>
+              <button onclick="setStep(2)" class="step-dot h-2 rounded-full transition-all"
+                style="width:8px;background:#d1d5db;" data-dot="2"></button>
+              <button onclick="setStep(3)" class="step-dot h-2 rounded-full transition-all"
+                style="width:8px;background:#d1d5db;" data-dot="3"></button>
+              <span class="ml-2 text-xs text-gray-400" id="step-counter">1 / 4</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <section id="pricing" class="py-24 px-6 relative overflow-hidden bg-white">
+        <div class="absolute pointer-events-none"
+          style="top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(187,247,208,.35) 0%,transparent 60%);">
+        </div>
+        <div class="max-w-5xl mx-auto relative z-10">
+
+          <!-- heading -->
+          <div class="reveal text-center mb-12">
+            <span class="eyebrow"
+              style="background:rgba(240,253,244,.9);border:1px solid #bbf7d0;color:#16a34a;">ราคา</span>
+            <h2 class="text-4xl md:text-5xl font-extrabold text-gray-950">เริ่มสร้างได้ฟรี <span
+                class="text-gradient-vivid">จ่ายเฉพาะตอนจะ Publish</span></h2>
+            <p class="mt-3 text-gray-500 text-base">ไม่มีรายเดือนบังคับ · ไม่ต้องผูกบัตร · ยกเลิกได้ตลอด</p>
+          </div>
+
+          <!-- 3 equal cards -->
+          <div class="grid md:grid-cols-3 gap-6 items-stretch">
+
+            <!-- Card 1: เครดิต AI -->
+            <div class="reveal bg-white rounded-3xl border border-gray-100 p-7 flex flex-col"
+              style="box-shadow:0 2px 16px rgba(0,0,0,.06);">
+              <div class="w-10 h-10 rounded-2xl flex items-center justify-center mb-4" style="background:#dcfce7;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+              </div>
+              <h3 class="text-lg font-extrabold text-gray-950 mb-1">เครดิต AI</h3>
+              <p class="text-sm text-gray-500 mb-5">ใช้สั่ง AI สร้างและแก้ไขเว็บ เติมเมื่อต้องการ ไม่มีหมดอายุ</p>
+              <div class="rounded-2xl p-5 text-center mb-5" style="background:#f0fdf4;border:1.5px solid #bbf7d0;">
+                <div class="text-4xl font-extrabold mb-0.5" style="color:#15803d;">฿2</div>
+                <div class="text-xs text-green-700 font-semibold">ต่อ 1 เครดิต &nbsp;·&nbsp; 100 เครดิต = ฿200</div>
+              </div>
+              <ul class="space-y-3 mb-8 flex-1">
+                <li class="flex items-center gap-2.5 text-sm text-gray-600">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="flex-shrink-0">
+                    <circle cx="12" cy="12" r="12" fill="#dcfce7" />
+                    <polyline points="7 12 10.5 15.5 17 9" stroke="#15803d" stroke-width="2.5" stroke-linecap="round"
+                      stroke-linejoin="round" />
+                  </svg>สมัครครั้งแรกรับฟรี 50 เครดิต
+                </li>
+                <li class="flex items-center gap-2.5 text-sm text-gray-600">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="flex-shrink-0">
+                    <circle cx="12" cy="12" r="12" fill="#dcfce7" />
+                    <polyline points="7 12 10.5 15.5 17 9" stroke="#15803d" stroke-width="2.5" stroke-linecap="round"
+                      stroke-linejoin="round" />
+                  </svg>1 เว็บไซต์ใช้ประมาณ 20-50 เครดิต ขึ้นกับจำนวนหน้าและความซับซ้อนของเว็บ
+                </li>
+                <li class="flex items-center gap-2.5 text-sm text-gray-600">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="flex-shrink-0">
+                    <circle cx="12" cy="12" r="12" fill="#dcfce7" />
+                    <polyline points="7 12 10.5 15.5 17 9" stroke="#15803d" stroke-width="2.5" stroke-linecap="round"
+                      stroke-linejoin="round" />
+                  </svg>สแกน QR PromptPay ใช้ได้ทันที
+                </li>
+                <li class="flex items-center gap-2.5 text-sm text-gray-600">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="flex-shrink-0">
+                    <circle cx="12" cy="12" r="12" fill="#dcfce7" />
+                    <polyline points="7 12 10.5 15.5 17 9" stroke="#15803d" stroke-width="2.5" stroke-linecap="round"
+                      stroke-linejoin="round" />
+                  </svg>ซื้อเท่าที่ต้องการ ไม่มีขั้นต่ำ
+                </li>
+              </ul>
+              <a href="#"
+                class="block w-full text-center py-3.5 rounded-2xl text-sm font-bold border-2 hover:bg-green-50 transition-all"
+                style="border-color:#16a34a;color:#16a34a;">ซื้อเครดิต →</a>
+            </div>
+
+            <!-- Card 2: โฮสต์ (popular) -->
+            <div class="reveal bg-white rounded-3xl p-7 flex flex-col"
+              style="border:2px solid #16a34a;box-shadow:0 8px 32px rgba(22,163,74,.15);">
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-10 h-10 rounded-2xl flex items-center justify-center" style="background:#dcfce7;">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="3" width="20" height="14" rx="2" />
+                    <path d="M8 21h8M12 17v4" />
+                  </svg>
+                </div>
+                <span class="px-3 py-1 rounded-full text-xs font-extrabold text-white"
+                  style="background:#15803d;">แนะนำ</span>
+              </div>
+              <h3 class="text-lg font-extrabold text-gray-950 mb-1">โฮสต์เว็บ</h3>
+              <p class="text-sm text-gray-500 mb-5">เริ่มฟรีได้เลย อัปเกรดเมื่อพร้อม</p>
+              <div class="space-y-2.5 mb-5 flex-1">
+                <div class="flex items-center justify-between rounded-xl bg-gray-50 border border-gray-100 px-4 py-3">
+                  <span class="text-sm font-semibold text-gray-700">Subdomain ฟรี</span>
+                  <span class="px-2.5 py-0.5 rounded-lg text-xs font-bold"
+                    style="background:#dcfce7;color:#15803d;">ฟรี</span>
+                </div>
+                <div class="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3">
+                  <span class="text-sm font-semibold text-gray-700">รายเดือน</span>
+                  <span class="text-sm font-bold text-gray-800">฿200<span
+                      class="text-xs font-normal text-gray-400">/เดือน</span></span>
+                </div>
+                <div class="rounded-xl px-4 py-3.5" style="border:2px solid #16a34a;background:rgba(240,253,244,.5);">
+                  <div class="flex items-center justify-between mb-1.5">
+                    <span class="text-sm font-bold" style="color:#15803d;">รายปี — ประหยัดสุด</span>
+                    <span class="text-xs font-bold px-2 py-0.5 rounded-lg"
+                      style="background:#fce7f3;color:#be185d;">+ฟรี 50 เครดิต</span>
+                  </div>
+                  <div class="flex items-baseline gap-1.5">
+                    <span class="text-sm text-gray-400 line-through">฿2,000</span>
+                    <span class="text-2xl font-extrabold text-gray-950">฿1,000</span>
+                    <span class="text-xs text-gray-400">/ปี</span>
+                  </div>
+                  <div class="text-xs text-gray-400 mt-0.5">เฉลี่ย ฿83/เดือน</div>
+                </div>
+                <div class="flex items-center gap-2.5 rounded-xl px-3 py-2.5"
+                  style="background:#fff7ed;border:1px solid #fed7aa;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ea580c" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0">
+                    <path
+                      d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                    <line x1="12" y1="9" x2="12" y2="13" />
+                    <line x1="12" y1="17" x2="12.01" y2="17" />
+                  </svg>
+                  <span class="text-xs font-bold text-orange-700">เหลือ 2,000 สิทธิ์ — หมดแล้วกลับราคา ฿2,000</span>
+                </div>
+              </div>
+              <a href="#"
+                class="block w-full text-center py-3.5 rounded-2xl text-sm font-bold text-white transition-all hover:opacity-90"
+                style="background:#15803d;box-shadow:0 4px 14px rgba(21,128,61,.3);">สมัครแผนรายปี →</a>
+            </div>
+
+            <!-- Card 3: โดเมน -->
+            <div class="reveal bg-white rounded-3xl border border-gray-100 p-7 flex flex-col"
+              style="box-shadow:0 2px 16px rgba(0,0,0,.06);">
+              <div class="w-10 h-10 rounded-2xl flex items-center justify-center mb-4" style="background:#dcfce7;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="2" y1="12" x2="22" y2="12" />
+                  <path
+                    d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                </svg>
+              </div>
+              <h3 class="text-lg font-extrabold text-gray-950 mb-1">โดเมน <span
+                  class="text-sm font-normal text-gray-400">(ไม่บังคับ)</span></h3>
+              <p class="text-sm text-gray-500 mb-5">ไม่มีโดเมน? ใช้ Subdomain ฟรีก่อนได้เลย</p>
+              <div class="space-y-2 mb-5 flex-1">
+                <div class="flex items-center justify-between rounded-xl px-4 py-3"
+                  style="background:#f0fdf4;border:1px solid #bbf7d0;">
+                  <span class="font-mono font-bold text-gray-800">.com</span>
+                  <span class="text-sm font-bold" style="color:#15803d;">~฿450 / ปี</span>
+                </div>
+                <div class="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3">
+                  <span class="font-mono font-semibold text-gray-600">.net</span>
+                  <span class="text-xs text-gray-400">อ้างอิงราคา HL</span>
+                </div>
+                <div class="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3">
+                  <span class="font-mono font-semibold text-gray-600">.co.th</span>
+                  <span class="text-xs text-gray-400">อ้างอิงราคา HL</span>
+                </div>
+                <div class="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3">
+                  <span class="font-mono font-semibold text-gray-600">.shop</span>
+                  <span class="text-xs text-gray-400">อ้างอิงราคา HL</span>
+                </div>
+                <div class="rounded-xl px-4 py-3 text-center" style="background:#f0fdf4;border:1px dashed #86efac;">
+                  <div class="text-xs font-semibold text-green-700">หรือใช้ฟรีกับ Subdomain</div>
+                  <div class="font-mono text-xs font-bold text-gray-600 mt-0.5">yourname.hostinglotus.cloud</div>
+                </div>
+              </div>
+              <ul class="space-y-2 mb-6">
+                <li class="flex items-center gap-2 text-xs text-gray-500">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" class="flex-shrink-0">
+                    <circle cx="12" cy="12" r="12" fill="#dcfce7" />
+                    <polyline points="7 12 10.5 15.5 17 9" stroke="#15803d" stroke-width="2.5" stroke-linecap="round"
+                      stroke-linejoin="round" />
+                  </svg>มีโดเมนอยู่แล้ว? นำมาเชื่อมได้ฟรี
+                </li>
+                <li class="flex items-center gap-2 text-xs text-gray-500">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" class="flex-shrink-0">
+                    <circle cx="12" cy="12" r="12" fill="#dcfce7" />
+                    <polyline points="7 12 10.5 15.5 17 9" stroke="#15803d" stroke-width="2.5" stroke-linecap="round"
+                      stroke-linejoin="round" />
+                  </svg>SSL อัตโนมัติทุกแผน ไม่บวกเพิ่ม
+                </li>
+              </ul>
+              <a href="#"
+                class="block w-full text-center py-3.5 rounded-2xl text-sm font-bold border-2 hover:bg-green-50 transition-all"
+                style="border-color:#16a34a;color:#16a34a;">ดูราคาโดเมน →</a>
+            </div>
+
+          </div>
+        </div>
+      </section>
+      </a>
+    </div>
+
+    </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+     FAQ
+════════════════════════════════════════ -->
+  <section id="faq" class="py-24 px-6 relative overflow-hidden">
+    <div class="absolute inset-0 pointer-events-none"
+      style="background:radial-gradient(ellipse 60% 50% at 50% 100%,rgba(255,172,190,.18) 0%,transparent 65%);"></div>
+    <div class="absolute inset-0 pointer-events-none"
+      style="background:radial-gradient(ellipse 50% 40% at 50% 0%,rgba(187,247,208,.18) 0%,transparent 65%);"></div>
+    <div class="max-w-3xl mx-auto relative z-10" style="overflow:visible;">
+      <div class="reveal text-center mb-12">
+        <span class="eyebrow" style="background:rgba(240,253,244,.9);border:1px solid #bbf7d0;color:#16a34a;">FAQ</span>
+        <h2 class="text-4xl md:text-5xl font-extrabold text-gray-950">คำถาม <span
+            class="text-gradient-vivid">ที่พบบ่อย</span></h2>
+      </div>
+      <div class="space-y-3 relative">
+        <div class="faq-item rounded-2xl border bg-white overflow-hidden shadow-sm" style="border-color:#e5e7eb;">
+          <button class="faq-toggle w-full flex items-center justify-between px-6 py-4 text-left gap-4">
+            <span class="font-semibold text-base text-gray-800">ต้องรู้โค้ดไหมในการสร้างเว็บ?</span>
+            <span class="faq-icon flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center font-bold text-sm"
+              style="background:#e5e7eb;color:#6b7280;">+</span>
+          </button>
+          <div class="faq-body">
+            <div class="px-6 pb-5 text-gray-600 text-sm leading-relaxed border-t border-gray-100 pt-4"
+              style="background:rgba(240,253,244,.4);">ไม่ต้องเลย! เพียงแค่บอก AI เป็นภาษาไทยว่าต้องการเว็บแบบไหน AI
+              จะสร้างทุกอย่างให้ ทั้งโค้ด ดีไซน์ และเนื้อหา</div>
+          </div>
+        </div>
+        <div class="faq-item rounded-2xl border bg-white overflow-hidden shadow-sm" style="border-color:#e5e7eb;">
+          <button class="faq-toggle w-full flex items-center justify-between px-6 py-4 text-left gap-4">
+            <span class="font-semibold text-base text-gray-800">50 เครดิตฟรีพอสร้างเว็บได้ไหม?</span>
+            <span class="faq-icon flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center font-bold text-sm"
+              style="background:#e5e7eb;color:#6b7280;">+</span>
+          </button>
+          <div class="faq-body">
+            <div class="px-6 pb-5 text-gray-600 text-sm leading-relaxed border-t border-gray-100 pt-4"
+              style="background:rgba(255,240,246,.4);">พอสร้างเว็บได้ 1-2 เว็บ แต่ละเครดิตใช้สำหรับ 1 คำสั่ง AI เช่น
+              สร้างหน้า แก้สี เพิ่มเนื้อหา โดยเฉลี่ยเว็บ 1 หน้าใช้ประมาณ 15-20 เครดิต</div>
+          </div>
+        </div>
+        <div class="faq-item rounded-2xl border bg-white overflow-hidden shadow-sm" style="border-color:#e5e7eb;">
+          <button class="faq-toggle w-full flex items-center justify-between px-6 py-4 text-left gap-4">
+            <span class="font-semibold text-base text-gray-800">เว็บที่สร้างมีโฆษณาหรือโลโก้ HostingLotus ไหม?</span>
+            <span class="faq-icon flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center font-bold text-sm"
+              style="background:#e5e7eb;color:#6b7280;">+</span>
+          </button>
+          <div class="faq-body">
+            <div class="px-6 pb-5 text-gray-600 text-sm leading-relaxed border-t border-gray-100 pt-4"
+              style="background:rgba(240,253,244,.4);">แผน Starter จะมี "Powered by HostingLotus" ที่ Footer เล็กๆ แผน
+              Pro ขึ้นไปสามารถลบออกได้ แผน Business สามารถ White-label ได้เต็มรูปแบบ</div>
+          </div>
+        </div>
+        <div class="faq-item rounded-2xl border bg-white overflow-hidden shadow-sm" style="border-color:#e5e7eb;">
+          <button class="faq-toggle w-full flex items-center justify-between px-6 py-4 text-left gap-4">
+            <span class="font-semibold text-base text-gray-800">ถ้าต้องการใช้ Domain ของตัวเองได้ไหม?</span>
+            <span class="faq-icon flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center font-bold text-sm"
+              style="background:#e5e7eb;color:#6b7280;">+</span>
+          </button>
+          <div class="faq-body">
+            <div class="px-6 pb-5 text-gray-600 text-sm leading-relaxed border-t border-gray-100 pt-4"
+              style="background:rgba(255,240,246,.4);">ได้เลย! แผน Pro ขึ้นไปรองรับ Custom Domain ฟรี พร้อม SSL
+              Certificate อัตโนมัติ ไม่ต้องตั้งค่าเอง ระบบจะจัดการให้ทั้งหมด</div>
+          </div>
+        </div>
+        <div class="faq-item rounded-2xl border bg-white overflow-hidden shadow-sm" style="border-color:#e5e7eb;">
+          <button class="faq-toggle w-full flex items-center justify-between px-6 py-4 text-left gap-4">
+            <span class="font-semibold text-base text-gray-800">เว็บที่สร้างแก้ไขเองได้ไหม?</span>
+            <span class="faq-icon flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center font-bold text-sm"
+              style="background:#e5e7eb;color:#6b7280;">+</span>
+          </button>
+          <div class="faq-body">
+            <div class="px-6 pb-5 text-gray-600 text-sm leading-relaxed border-t border-gray-100 pt-4"
+              style="background:rgba(240,253,244,.4);">ได้! สามารถแก้ไขได้ตลอดเวลาผ่าน AI Chat
+              เพียงบอกว่าต้องการเปลี่ยนอะไร AI จะแก้ไขให้ทันที หรือจะแก้โค้ดเองก็ได้หากต้องการ</div>
+          </div>
+        </div>
+        <div class="faq-item rounded-2xl border bg-white overflow-hidden shadow-sm" style="border-color:#e5e7eb;">
+          <button class="faq-toggle w-full flex items-center justify-between px-6 py-4 text-left gap-4">
+            <span class="font-semibold text-base text-gray-800">ชำระเงินได้ด้วยวิธีไหน?</span>
+            <span class="faq-icon flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center font-bold text-sm"
+              style="background:#e5e7eb;color:#6b7280;">+</span>
+          </button>
+          <div class="faq-body">
+            <div class="px-6 pb-5 text-gray-600 text-sm leading-relaxed border-t border-gray-100 pt-4"
+              style="background:rgba(255,240,246,.4);">รองรับบัตรเครดิต/เดบิต, PromptPay, TrueMoney Wallet, Line Pay
+              และโอนธนาคาร ปลอดภัยด้วย SSL ทุกการชำระเงิน</div>
+          </div>
+        </div>
+        <div class="faq-item rounded-2xl border bg-white overflow-hidden shadow-sm" style="border-color:#e5e7eb;">
+          <button class="faq-toggle w-full flex items-center justify-between px-6 py-4 text-left gap-4">
+            <span class="font-semibold text-base text-gray-800">ยกเลิกแผนรายเดือนได้ไหม?</span>
+            <span class="faq-icon flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center font-bold text-sm"
+              style="background:#e5e7eb;color:#6b7280;">+</span>
+          </button>
+          <div class="faq-body">
+            <div class="px-6 pb-5 text-gray-600 text-sm leading-relaxed border-t border-gray-100 pt-4"
+              style="background:rgba(240,253,244,.4);">ได้เสมอ! ยกเลิกได้ทุกเวลาผ่าน Dashboard ไม่มีค่าปรับ
+              เว็บของคุณจะยังทำงานได้จนครบรอบบิล</div>
+          </div>
+        </div>
+        <div class="faq-item rounded-2xl border bg-white overflow-hidden shadow-sm" style="border-color:#e5e7eb;">
+          <button class="faq-toggle w-full flex items-center justify-between px-6 py-4 text-left gap-4">
+            <span class="font-semibold text-base text-gray-800">ข้อมูลและเว็บไซต์ของฉันปลอดภัยไหม?</span>
+            <span class="faq-icon flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center font-bold text-sm"
+              style="background:#e5e7eb;color:#6b7280;">+</span>
+          </button>
+          <div class="faq-body">
+            <div class="px-6 pb-5 text-gray-600 text-sm leading-relaxed border-t border-gray-100 pt-4"
+              style="background:rgba(255,240,246,.4);">ปลอดภัย 100% เซิร์ฟเวอร์อยู่ในไทย backup อัตโนมัติทุกวัน
+              ข้อมูลเป็นของคุณ ไม่มีการขายหรือแชร์ข้อมูล</div>
+          </div>
+        </div>
+        <div class="absolute -bottom-14 -right-10 pointer-events-none select-none hidden md:block z-20 animate-float"
+          style="animation-delay:1s;">
+          <img src="./public/mascot-4.png" alt="น้องใบบัว" width="140" height="140" style="object-fit:contain;">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+     CTA FINAL
+════════════════════════════════════════ -->
+  <section class="relative overflow-hidden py-32 px-6 text-center"
+    style="background:linear-gradient(160deg,#fff0f6 0%,#fce4ec 30%,#f0fdf4 65%,#dcfce7 100%);">
+    <div class="absolute inset-0 pointer-events-none"
+      style="background:radial-gradient(ellipse 70% 55% at 50% 35%,rgba(233,30,99,.08) 0%,transparent 60%);"></div>
+    <div class="absolute inset-0 pointer-events-none"
+      style="opacity:.18;background-image:radial-gradient(circle,#f48fb1 1px,transparent 1px);background-size:30px 30px;">
+    </div>
+    <div class="absolute pointer-events-none animate-blob"
+      style="top:-33%;left:-25%;width:600px;height:600px;border-radius:9999px;background:radial-gradient(circle,rgba(255,172,190,.45) 0%,transparent 60%);">
+    </div>
+    <div class="absolute pointer-events-none animate-blob delay-4000"
+      style="bottom:-33%;right:-25%;width:500px;height:500px;border-radius:9999px;background:radial-gradient(circle,rgba(184,240,200,.45) 0%,transparent 60%);">
+    </div>
+    <!-- sparkles -->
+    <div class="absolute animate-sparkle"
+      style="top:14%;left:7%;width:5px;height:5px;border-radius:9999px;background:#e91e63;"></div>
+    <div class="absolute animate-sparkle"
+      style="top:22%;right:10%;width:4px;height:4px;border-radius:9999px;background:#43a047;animation-delay:1.2s;">
+    </div>
+    <div class="absolute animate-sparkle"
+      style="top:60%;left:4%;width:6px;height:6px;border-radius:9999px;background:#e91e63;animation-delay:.7s;"></div>
+    <div class="absolute animate-sparkle"
+      style="bottom:18%;right:7%;width:5px;height:5px;border-radius:9999px;background:#43a047;animation-delay:2s;">
+    </div>
+    <div class="absolute animate-sparkle"
+      style="top:40%;right:4%;width:4px;height:4px;border-radius:9999px;background:#e91e63;animation-delay:.4s;"></div>
+    <div class="absolute animate-sparkle"
+      style="bottom:28%;left:10%;width:7px;height:7px;border-radius:9999px;background:#43a047;animation-delay:1.6s;">
+    </div>
+    <div class="relative z-10 max-w-3xl mx-auto" style="overflow:visible;">
+      <div class="reveal">
+        <div class="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full border"
+          style="background:rgba(255,255,255,.7);border-color:rgba(233,30,99,.3);color:#ad1457;backdrop-filter:blur(8px);">
+          <span class="w-1.5 h-1.5 rounded-full animate-pulse" style="background:#e91e63;"></span>
+          <span class="text-sm font-semibold">เริ่มต้นได้วันนี้ ฟรี ไม่มีเงื่อนไข</span>
+        </div>
+        <h2 class="text-5xl md:text-7xl font-extrabold text-gray-950 leading-tight mb-5">เปลี่ยนไอเดีย<br>ให้เป็น<span
+            class="text-gradient-vivid"> เว็บจริง</span></h2>
+        <p class="text-lg text-gray-500 mb-10 max-w-lg mx-auto leading-relaxed">บอก AI ว่าต้องการเว็บแบบไหน —
+          สร้างเว็บสวยพร้อม Hosting ให้ทุกอย่างใน&nbsp;3&nbsp;นาที</p>
+        <!-- stats strip -->
+        <div class="inline-flex items-center rounded-2xl mb-10 overflow-hidden border"
+          style="background:rgba(255,255,255,.6);border-color:#bbf7d0;backdrop-filter:blur(8px);">
+          <div class="px-7 py-4 text-center">
+            <div class="font-extrabold text-gray-900 text-xl">50 <span style="color:#43a047;">เครดิต</span></div>
+            <div class="text-xs text-gray-400 mt-0.5">ฟรีสำหรับผู้ใช้ใหม่</div>
+          </div>
+          <div class="px-7 py-4 text-center" style="border-left:1px solid #bbf7d0;">
+            <div class="font-extrabold text-gray-900 text-xl">&lt; 7 <span style="color:#43a047;">นาที</span></div>
+            <div class="text-xs text-gray-400 mt-0.5">สร้างเว็บเสร็จ</div>
+          </div>
+          <div class="px-7 py-4 text-center" style="border-left:1px solid #bbf7d0;">
+            <div class="font-extrabold text-gray-900 text-xl">฿0</div>
+            <div class="text-xs text-gray-400 mt-0.5">ค่าใช้จ่ายเริ่มต้น</div>
+          </div>
+        </div>
+        <!-- CTAs -->
+        <div class="flex flex-wrap gap-4 justify-center mb-8">
+          <div class="relative">
+            <div class="absolute inset-0 rounded-2xl animate-ping" style="background:#43a047;opacity:.4;"></div>
+            <a href="#"
+              class="relative inline-flex items-center gap-2.5 px-9 py-4 rounded-2xl text-white font-extrabold text-lg transition-all hover:scale-105 hover:-translate-y-0.5 active:scale-95"
+              style="background:#2e7d32;box-shadow:0 8px 24px rgba(46,125,50,.25);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+              </svg>
+              เริ่มสร้างด้วย AI ฟรี
+            </a>
+          </div>
+          <a href="#examples"
+            class="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-white border border-gray-200 text-gray-700 font-bold text-lg transition-all shadow-sm hover:scale-105">
+            ดูตัวอย่างเว็บ
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="12 5 19 12 12 19" />
+            </svg>
+          </a>
+        </div>
+        <!-- mascot-6 -->
+        <div class="absolute pointer-events-none select-none hidden md:block z-20 animate-float"
+          style="bottom:-80px;right:-80px;animation-delay:.5s;">
+          <img src="./public/mascot-6.png" alt="น้องใบบัว" width="200" height="200" style="object-fit:contain;">
+        </div>
+        <!-- trust signals -->
+        <div class="flex flex-wrap justify-center gap-x-6 gap-y-2">
+          <span class="flex items-center gap-1.5 text-sm text-gray-400"><svg width="13" height="13" viewBox="0 0 24 24"
+              fill="none" stroke="#43a047" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>ไม่ต้องบัตรเครดิต</span>
+          <span class="flex items-center gap-1.5 text-sm text-gray-400"><svg width="13" height="13" viewBox="0 0 24 24"
+              fill="none" stroke="#43a047" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>สร้างเว็บได้ทันที</span>
+          <span class="flex items-center gap-1.5 text-sm text-gray-400"><svg width="13" height="13" viewBox="0 0 24 24"
+              fill="none" stroke="#43a047" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>รองรับภาษาไทย 100%</span>
+          <span class="flex items-center gap-1.5 text-sm text-gray-400"><svg width="13" height="13" viewBox="0 0 24 24"
+              fill="none" stroke="#43a047" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>Support ทีมไทย</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════ -->
+  <footer style="background:#0d1f0e;">
+    <div class="h-1 w-full" style="background:linear-gradient(90deg,#43a047 0%,#2e7d32 30%,#c2185b 70%,#e91e63 100%);">
+    </div>
+    <div class="max-w-6xl mx-auto px-6 py-16">
+      <div class="grid md:grid-cols-4 gap-10 mb-12">
+        <div>
+          <div class="mb-4"><img src="./public/hosting-lotus-logo.png" alt="HostingLotus"
+              class="h-9 w-auto object-contain" style="filter:brightness(0) invert(1);"></div>
+          <p class="text-sm leading-relaxed mb-5" style="color:rgba(255,255,255,.5);">บริษัท เมตราไบต์ คลาวด์
+            จำกัด<br>ประสบการณ์มากกว่า 10 ปี ด้าน Network,<br>Microsoft และ Google Cloud</p>
+          <div class="flex gap-3">
+            <a href="#" class="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-bold transition-all"
+              style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.6);">LINE</a>
+            <a href="#" class="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-bold transition-all"
+              style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.6);">FB</a>
+            <a href="#" class="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-bold transition-all"
+              style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.6);">IG</a>
+            <a href="#" class="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-bold transition-all"
+              style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.6);">TW</a>
+          </div>
+        </div>
+        <div>
+          <h4 class="text-sm font-extrabold text-white mb-4 tracking-wide">BAIBUA AI</h4>
+          <ul class="space-y-2.5">
+            <li><a href="#how-it-works" class="text-sm transition-colors hover:text-white"
+                style="color:rgba(255,255,255,.5);">วิธีใช้งาน</a></li>
+            <li><a href="#examples" class="text-sm transition-colors hover:text-white"
+                style="color:rgba(255,255,255,.5);">ตัวอย่างเว็บ</a></li>
+            <li><a href="#pricing" class="text-sm transition-colors hover:text-white"
+                style="color:rgba(255,255,255,.5);">ราคา / แผน</a></li>
+            <li><a href="#" class="text-sm transition-colors hover:text-white"
+                style="color:rgba(255,255,255,.5);">บทความ</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-extrabold text-white mb-4 tracking-wide">บริการของเรา</h4>
+          <ul class="space-y-2.5">
+            <li><a href="#" class="text-sm transition-colors hover:text-white"
+                style="color:rgba(255,255,255,.5);">Hosting Package</a></li>
+            <li><a href="#" class="text-sm transition-colors hover:text-white"
+                style="color:rgba(255,255,255,.5);">Domain Registration</a></li>
+            <li><a href="#" class="text-sm transition-colors hover:text-white" style="color:rgba(255,255,255,.5);">SSL
+                Certificate</a></li>
+            <li><a href="#" class="text-sm transition-colors hover:text-white" style="color:rgba(255,255,255,.5);">Cloud
+                Server</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-extrabold text-white mb-4 tracking-wide">บริษัท</h4>
+          <ul class="space-y-2.5">
+            <li><a href="#" class="text-sm transition-colors hover:text-white"
+                style="color:rgba(255,255,255,.5);">เกี่ยวกับเรา</a></li>
+            <li><a href="#" class="text-sm transition-colors hover:text-white"
+                style="color:rgba(255,255,255,.5);">ติดต่อเรา</a></li>
+            <li><a href="#" class="text-sm transition-colors hover:text-white"
+                style="color:rgba(255,255,255,.5);">นโยบายความเป็นส่วนตัว</a></li>
+            <li><a href="#" class="text-sm transition-colors hover:text-white"
+                style="color:rgba(255,255,255,.5);">เงื่อนไขการใช้งาน</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t pt-8 flex flex-col md:flex-row items-center justify-between gap-4"
+        style="border-color:rgba(255,255,255,.1);">
+        <div class="flex flex-wrap gap-6 text-sm" style="color:rgba(255,255,255,.4);">
+          <span>📞 02-1054-322</span>
+          <span>✉ support@metrabyte.cloud</span>
+          <span>💬 Line: @hostinglotus</span>
+        </div>
+        <p class="text-xs" style="color:rgba(255,255,255,.3);">© 2024 HostingLotus · Metrabyte Cloud Co., Ltd. · All
+          rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <style>
+    #testimonials-track::-webkit-scrollbar {
+      display: none;
+    }
+
+    #testimonials-track {
+      scrollbar-width: none;
+    }
+  </style>
+
+  <script>
+      // ── Three.js hero background ──
+      (function () {
+        if (!window.THREE) return;
+        var container = document.getElementById('three-hero-bg');
+        if (!container) return;
+        var w = window.innerWidth, h = window.innerHeight;
+        var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(w, h);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.domElement.style.position = 'absolute';
+        renderer.domElement.style.inset = '0';
+        container.appendChild(renderer.domElement);
+        var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera(60, w / h, 0.1, 1000);
+        camera.position.z = 30;
+        var N = 100, geo = new THREE.BufferGeometry(), pos = new Float32Array(N * 3);
+        for (var i = 0; i < N; i++) { pos[i * 3] = (Math.random() - .5) * 80; pos[i * 3 + 1] = (Math.random() - .5) * 60; pos[i * 3 + 2] = (Math.random() - .5) * 40; }
+        geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+        var pts = new THREE.Points(geo, new THREE.PointsMaterial({ color: 0x43a047, size: .5, transparent: true, opacity: .45 }));
+        scene.add(pts);
+        (function tick(t) { requestAnimationFrame(tick); pts.rotation.y = t * .00005; pts.rotation.x = t * .00003; renderer.render(scene, camera); })(0);
+        window.addEventListener('resize', function () { var nw = window.innerWidth, nh = window.innerHeight; camera.aspect = nw / nh; camera.updateProjectionMatrix(); renderer.setSize(nw, nh); });
+      })();
+
+    // ── GSAP hero animation ──
+    (function () {
+      if (!window.gsap) return;
+      if (window.ScrollTrigger) gsap.registerPlugin(ScrollTrigger);
+      gsap.to('#hero-copy', { opacity: 1, y: 0, duration: 1, ease: 'power3.out', delay: .2 });
+      gsap.to('#hero-mockup', { opacity: 1, x: 0, scale: 1, duration: 1.1, ease: 'power3.out', delay: .5 });
+      gsap.to('#scroll-indicator', { opacity: 1, duration: .8, delay: 1.6 });
+    })();
+
+    // ── Scroll reveal ──
+    (function () {
+      var obs = new IntersectionObserver(function (entries) { entries.forEach(function (e) { if (e.isIntersecting) e.target.classList.add('visible'); }); }, { threshold: .1, rootMargin: '0px 0px -60px 0px' });
+      document.querySelectorAll('.reveal').forEach(function (el) { obs.observe(el); });
+    })();
+
+    // ── Nav shrink on scroll ──
+    (function () {
+      var nav = document.getElementById('nav-inner');
+      window.addEventListener('scroll', function () {
+        if (window.scrollY > 60) { nav.style.height = '48px'; nav.style.borderRadius = '16px'; nav.style.marginTop = '8px'; nav.style.maxWidth = '1200px'; nav.style.paddingLeft = '20px'; nav.style.paddingRight = '20px'; nav.style.marginLeft = 'auto'; nav.style.marginRight = 'auto'; }
+        else { nav.style.height = '56px'; nav.style.borderRadius = '0'; nav.style.marginTop = '0'; nav.style.maxWidth = '100%'; nav.style.paddingLeft = '32px'; nav.style.paddingRight = '32px'; }
+      });
+    })();
+
+    // ── HowItWorks step interaction ──
+    var _step2Timer = null;
+    var _stepColors = ['#43a047', '#0891b2', '#7c3aed', '#ea580c'];
+
+    function setStep(n) {
+      document.querySelectorAll('.step-card').forEach(function (c, i) { if (i === n) c.classList.add('active'); else c.classList.remove('active'); });
+      document.querySelectorAll('.step-icon').forEach(function (icon, i) {
+        var svgs = icon.querySelectorAll('svg');
+        if (i === n) { icon.style.background = _stepColors[n]; icon.style.boxShadow = '0 4px 14px ' + _stepColors[n] + '55'; svgs.forEach(function (s) { s.setAttribute('stroke', 'white'); }); }
+        else { icon.style.background = '#f3f4f6'; icon.style.boxShadow = 'none'; svgs.forEach(function (s) { s.setAttribute('stroke', '#9ca3af'); }); }
+      });
+      document.querySelectorAll('.step-preview').forEach(function (p, i) { if (i === n) p.classList.add('active'); else p.classList.remove('active'); });
+      document.querySelectorAll('.step-dot').forEach(function (d, i) { d.style.width = i === n ? '24px' : '8px'; d.style.background = i === n ? _stepColors[n] : '#d1d5db'; });
+      var counter = document.getElementById('step-counter');
+      if (counter) counter.textContent = (n + 1) + ' / 4';
+      if (_step2Timer) { clearInterval(_step2Timer); _step2Timer = null; }
+      var bar = document.getElementById('step2-bar'), pct = document.getElementById('step2-pct'), msg = document.getElementById('step2-msg');
+      if (bar) { bar.style.width = '0%'; if (pct) pct.textContent = '0%'; }
+      if (n === 1 && bar) {
+        var msgs = { 0: 'กำลังวางโครงสร้างเว็บ...', 20: 'สร้าง component และ layout...', 45: 'เพิ่มเนื้อหาและรูปภาพ...', 70: 'ปรับ style และ typography...', 90: 'ตรวจสอบ responsive design...', 99: 'เสร็จสมบูรณ์ ✓' };
+        var p = 0;
+        _step2Timer = setInterval(function () {
+          p = Math.min(p + 1, 100); bar.style.width = p + '%'; if (pct) pct.textContent = p + '%';
+          var keys = Object.keys(msgs).filter(function (k) { return p >= Number(k); });
+          if (keys.length && msg) msg.textContent = msgs[keys[keys.length - 1]];
+          if (p >= 100) { clearInterval(_step2Timer); _step2Timer = null; }
+        }, 80);
+      }
+    }
+
+    (function () {
+      var triggers = document.querySelectorAll('.step-trigger');
+      if (!triggers.length) return;
+      var obs = new IntersectionObserver(function (entries) { entries.forEach(function (e) { if (e.isIntersecting) setStep(parseInt(e.target.dataset.step)); }); }, { rootMargin: '-30% 0px -50% 0px' });
+      triggers.forEach(function (t) { obs.observe(t); });
+    })();
+
+    // ── FAQ accordion ──
+    (function () {
+      document.querySelectorAll('.faq-item').forEach(function (item) {
+        var btn = item.querySelector('.faq-toggle');
+        if (!btn) return;
+        btn.addEventListener('click', function () {
+          var wasOpen = item.classList.contains('open');
+          document.querySelectorAll('.faq-item.open').forEach(function (o) { o.classList.remove('open'); });
+          if (!wasOpen) item.classList.add('open');
+        });
+      });
+    })();
+
+    // ── Video controls ──
+    (function () {
+      var video = document.getElementById('demo-video');
+      var btnPlay = document.getElementById('btn-play-pause');
+      var iconPause = document.getElementById('icon-pause');
+      var iconPlay = document.getElementById('icon-play');
+      var btnMute = document.getElementById('btn-mute');
+      var iconMuted = document.getElementById('icon-muted');
+      var iconVol = document.getElementById('icon-volume');
+      if (!video || !btnPlay) return;
+      btnPlay.addEventListener('click', function () {
+        if (video.paused) { video.play(); iconPause.style.display = ''; iconPlay.style.display = 'none'; }
+        else { video.pause(); iconPause.style.display = 'none'; iconPlay.style.display = ''; }
+      });
+      if (btnMute) btnMute.addEventListener('click', function () {
+        video.muted = !video.muted;
+        iconMuted.style.display = video.muted ? '' : 'none';
+        if (iconVol) iconVol.style.display = video.muted ? 'none' : '';
+      });
+    })();
+
+    // ── Testimonials drag ──
+    (function () {
+      var track = document.getElementById('testimonials-track');
+      if (!track) return;
+      var isDragging = false, startX = 0, scrollLeft = 0;
+      track.addEventListener('mousedown', function (e) { isDragging = true; track.classList.add('dragging'); startX = e.pageX - track.offsetLeft; scrollLeft = track.scrollLeft; });
+      window.addEventListener('mouseup', function () { isDragging = false; track.classList.remove('dragging'); });
+      track.addEventListener('mousemove', function (e) { if (!isDragging) return; e.preventDefault(); track.scrollLeft = scrollLeft - (e.pageX - track.offsetLeft - startX); });
+      track.addEventListener('touchstart', function (e) { startX = e.touches[0].pageX - track.offsetLeft; scrollLeft = track.scrollLeft; }, { passive: true });
+      track.addEventListener('touchmove', function (e) { track.scrollLeft = scrollLeft - (e.touches[0].pageX - track.offsetLeft - startX); }, { passive: true });
+    })();
+  </script>
+
+</body>
+
+</html>

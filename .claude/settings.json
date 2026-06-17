@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(awk -F: '$2 > 2029 && $2 < 2500 {print; exit}')"
+    ]
+  }
+}
